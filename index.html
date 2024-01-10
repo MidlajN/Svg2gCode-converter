@@ -9,9 +9,9 @@
   <body>
     <div>
         <label for="svgInput">Paste SVG Data:</label>
-        <input type="file">
+        <input type="file" id="svgInput">
     </div>
-    <button onclick="convertSVGtoGCodeLogic(document.getElementById('svgInput').value)">Convert</button>
+    <button id="convertBtn">Convert</button>
     <div>
         <label for="gcodeOutput">Generated G-code:</label>
         <textarea id="gcodeOutput" rows="10" cols="50" readonly></textarea>
