@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG to G-code Converter</title>
+  </head>
+  <body>
+    <div>
+        <label for="svgInput">Paste SVG Data:</label>
+        <input type="file">
+    </div>
+    <button onclick="convertSVGtoGCodeLogic(document.getElementById('svgInput').value)">Convert</button>
+    <div>
+        <label for="gcodeOutput">Generated G-code:</label>
+        <textarea id="gcodeOutput" rows="10" cols="50" readonly></textarea>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
