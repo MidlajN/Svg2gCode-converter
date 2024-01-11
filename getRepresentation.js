@@ -8,6 +8,7 @@ import {
     getEllipses
 } from './getElements'
 
+
 export function getRepresentation(tree) {
     var node = {
         tagName: 'svg',

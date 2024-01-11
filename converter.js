@@ -1,34 +1,39 @@
-import { XMLparser } from './xmlParser.js'
-import { getRepresentation } from './getRepresentation.js'
+import { XMLparser } from './xmlParser.js';
+import { getRepresentation } from './getRepresentation.js';
+import { svg2gcode } from './svg2gcode';
 
 
-let settingsGCODE = {
-    inputFile: null,
-    outputFile: null,
-    colorCommandOn4: "\nG1 Z0 ;ON",
-    colorCommandOff4: "\nG1 Z{{Zoff}} ;OFF",
-    LineWithVariationIsDesactivated: true,
+// let settingsGCODE = {
+//     inputFile: null,
+//     outputFile: null,
+//     colorCommandOn4: "\nG1 Z0 ;ON",
+//     colorCommandOff4: "\nG1 Z{{Zoff}} ;OFF",
+//     LineWithVariationIsDesactivated: true,
 
 
-    start: "\nG1 Z{{Zoff}}\n;end of initialization\n",
-    end: "\nG0 X0 Y0;end of file",
-    feedRate: 1600,
-    seekRate: 4000,
+//     start: "\nG1 Z{{Zoff}}\n;end of initialization\n",
+//     end: "\nG0 X0 Y0;end of file",
+//     feedRate: 1600,
+//     seekRate: 4000,
 
 
 
-    // put your own folder where your svg files ares
-    inputFolder: '/',
-    // put your own folder for the export gcode file
-    exportFolder: '/home/fab-dev/',
+//     // put your own folder where your svg files ares
+//     inputFolder: '/',
+//     // put your own folder for the export gcode file
+//     exportFolder: '/home/fab-dev/',
 
-    writeOutput: true,
-    showOutput: false,
-    useSvgo: true
+//     writeOutput: true,
+//     showOutput: false,
+//     useSvgo: true
 
-}
+// }
 
 class Converter {
+    constructor(settings) {
+        this.settings = settings
+
+    }
 
     async convert(svgData) {
 
