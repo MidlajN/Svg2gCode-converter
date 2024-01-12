@@ -1,6 +1,4 @@
-
-
-import { SVGReader } from "./svgreader"
+import { SVGReader } from "./svgreader.js"
 let paths;
 let gcode = [];
 let path;

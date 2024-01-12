@@ -1,6 +1,6 @@
 
-import { Vec2 } from './vec2'
-import { getAttribute } from './xmlFunctions'
+import { Vec2 } from './vec2.js'
+import { getAttribute } from './xmlFunctions.js'
 let first_run
 var MaxStrokeWidth;
 export const SVGReader = {

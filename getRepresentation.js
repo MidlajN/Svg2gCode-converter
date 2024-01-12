@@ -7,7 +7,7 @@ import {
     getLines,
     getEllipses,
     getCircles
-} from './getElements'
+} from './getElements.js'
 
 
 export function getRepresentation(tree) {

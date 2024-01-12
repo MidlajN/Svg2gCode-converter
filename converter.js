@@ -1,6 +1,12 @@
+/**
+ * "This project is based on the exportSVGtoGCODE (https://github.com/o0morgan0o/exportSVGtoGCODE) repository, a Node.js CLI tool.
+ *  I have adapted and modified the code to work as a frontend website. 
+ *  Credit goes to the original authors for their work on exportSVGtoGCODE."
+ */
+
 import { XMLparser } from './xmlParser.js';
 import { getRepresentation } from './getRepresentation.js';
-import { svg2gcode } from './svg2gcode';
+import { svg2gcode } from './svg2gcode.js';
 let svgViewBox;
 class Converter {
     constructor(Settings) {
@@ -85,4 +91,4 @@ class Converter {
     }
 }
 
-export default Converter
+export { Converter }

@@ -1,14 +1,31 @@
 {
-  "name": "gcode-generator",
-  "private": true,
-  "version": "0.0.0",
+  "name": "svg-to-gcode",
+  "version": "1.0.0",
   "type": "module",
+  "main": "converter.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build"
   },
   "devDependencies": {
     "vite": "^5.0.8"
-  }
+  },
+  "dependencies": {},
+  "description": "A Website for generating gcode for the plotter from a given svg file",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MidlajN/Svg2gCode-converter.git"
+  },
+  "keywords": [
+    "Svg",
+    "svg2gcode",
+    "gcode",
+    "plotter",
+    "cnc",
+    "parser"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MidlajN/Svg2gCode-converter/issues"
+  },
+  "homepage": "https://github.com/MidlajN/Svg2gCode-converter#readme"
 }
