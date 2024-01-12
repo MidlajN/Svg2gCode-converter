@@ -6,14 +6,13 @@ import {
     decode_entities,
     num_keys,
     first_key,
-    getAttribute,
     trim,
   } from './xmlFunctions.js'; 
   
 
 let xml_header = '<?xml version="1.0"?>';
-let sort_args = null;
-let re_valid_tag_name = /^\w[\w\-\:\.]*$/;
+// let sort_args = null;
+// let re_valid_tag_name = /^\w[\w\-\:\.]*$/;
 // var indexNodeXML = 0;
 
 export const XMLparser = {
@@ -375,12 +374,4 @@ export const XMLparser = {
         xml += body;
         return xml;
     },
-
-    //
-    // Static Utility Functions:
-    //
-
-
 }
-
-// export default { XMLparser }

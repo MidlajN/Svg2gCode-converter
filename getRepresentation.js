@@ -5,7 +5,8 @@ import {
     getRects,
     getPaths,
     getLines,
-    getEllipses
+    getEllipses,
+    getCircles
 } from './getElements'
 
 

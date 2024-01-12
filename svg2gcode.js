@@ -36,21 +36,12 @@ import { SVGReader } from "./svgreader"
 let paths;
 let gcode = [];
 let path;
-let MaxStrokeWidth;
+// let multMaxStrokeWidth;
+// let MaxStrokeWidth;
 
 
 
 let scale = function (val) { // val is a point value
-    // var resolution = app.activeDocument.rasterEffectSettings.resolution;
-    // var inchs = val / 72; //conversion points to inches
-    // var mm = (inchs / 0.39370) * 10;
-    // if (mm < 0) mm = 0;
-    // else {
-    //     var mmString = mm.toString().split('.');
-    //     var aux = mmString[0] + (mmString[1] == null ? '' : '.') + (mmString[1] == null ? '' : mmString[1][0]) + (mmString[1] == null ? '' : mmString[1][1]);
-    //     mm = parseFloat(aux);
-    // }
-    // return mm;
     let tmp = 0.352778 * val
     if (tmp.toString().indexOf('.') == -1) {
         tmp = tmp.toString() + '.0'
@@ -63,32 +54,29 @@ let scale = function (val) { // val is a point value
 
 export function svg2gcode(svg, settings) {
     // clean off any preceding whitespace
-    settings = settings || {};
-    settings.start = settings.start ? settings.start : "";// end
-    settings.materialWidth = settings.materialWidth || 1;
-    settings.passWidth = 1;
-    // TODO : correct this and see if the original calcul is useful
-    // settings.scale = 1 / app.activeDocument.rasterEffectSettings.resolution / 0.393701;     //*106;
-    // settings.scale = 2
-    settings.end = settings.end ? settings.end : "";// end
-    settings.lazerOff = settings.lazerOff ? settings.lazerOff : ""; // lazerOff
-    settings.lazerOn = settings.lazerOn ? settings.lazerOn : "";   // lazerOn
-    settings.cutZ = settings.cutZ || 1; // cut z
-    settings.safeZ = settings.safeZ || 1;   // safe z
-    settings.feedRate = settings.feedRate || 1400;
-    settings.seekRate = settings.seekRate || 1100;
-    settings.bitWidth = settings.bitWidth || 1; // in mm
+    // settings = settings || {};
+    // settings.start = settings.start ? settings.start : "";// end
+    // settings.materialWidth = settings.materialWidth || 1;
+    // settings.passWidth = 1;
+    // settings.end = settings.end ? settings.end : "";// end
+    // settings.lazerOff = settings.lazerOff ? settings.lazerOff : ""; // lazerOff
+    // settings.lazerOn = settings.lazerOn ? settings.lazerOn : "";   // lazerOn
+    // settings.cutZ = settings.cutZ || 1; // cut z
+    // settings.safeZ = settings.safeZ || 1;   // safe z
+    // settings.feedRate = settings.feedRate || 1400;
+    // settings.seekRate = settings.seekRate || 1100;
+    // settings.bitWidth = settings.bitWidth || 1; // in mm
 
-    settings.colorCommandOn1 = settings.colorCommandOn1 || "";
-    settings.colorCommandOff1 = settings.colorCommandOff1 || "";
-    settings.colorCommandOn2 = settings.colorCommandOn2 || "";
-    settings.colorCommandOff2 = settings.colorCommandOff2 || "";
-    settings.colorCommandOn3 = settings.colorCommandOn3 || "";
-    settings.colorCommandOff3 = settings.colorCommandOff3 || "";
+    // settings.colorCommandOn1 = settings.colorCommandOn1 || "";
+    // settings.colorCommandOff1 = settings.colorCommandOff1 || "";
+    // settings.colorCommandOn2 = settings.colorCommandOn2 || "";
+    // settings.colorCommandOff2 = settings.colorCommandOff2 || "";
+    // settings.colorCommandOn3 = settings.colorCommandOn3 || "";
+    // settings.colorCommandOff3 = settings.colorCommandOff3 || "";
 
-    settings.color1 = settings.color1Text;
-    settings.color2 = settings.color2Text;
-    settings.color3 = settings.color3Text;
+    // settings.color1 = settings.color1Text;
+    // settings.color2 = settings.color2Text;
+    // settings.color3 = settings.color3Text;
 
     // console.log(svg)
 
@@ -145,11 +133,6 @@ export function svg2gcode(svg, settings) {
 
     for (var pathIdx = 0, pathLength = paths.length; pathIdx < pathLength; pathIdx++) {
         counter++
-        // process.stdout.clearLine()
-        // process.stdout.cursorTo(0)
-        // process.stdout.write(counter + " / " + pathLength + " path")
-
-
         path = paths[pathIdx];
 
 
@@ -167,91 +150,94 @@ export function svg2gcode(svg, settings) {
             'Y' + scale(height - path[0].y)
         ].join(' '));
 
-        gcode.push('G1 F' + settings.feedRate);
-        var stroke = path.node.stroke.split("#")[1];
+        gcode.push('G0 F' + settings.feedRate);
+        // var stroke = path.node.stroke.split("#")[1];
         var colorComandOn = "";
         var colorComandOff = "";
-
-        if (settings.color2 == stroke) {
-            colorComandOn = settings.colorCommandOn2;
-            colorComandOff = settings.colorCommandOff2;
-        }
-        else if (settings.color3 == stroke) {
-            colorComandOn = settings.colorCommandOn3;
-            colorComandOff = settings.colorCommandOff3;
-        }
-        else if (settings.color1 == stroke) {
-            colorComandOn = settings.colorCommandOn1;
-            colorComandOff = settings.colorCommandOff1;
-        }
-        else {
-            colorComandOn = settings.colorCommandOn4;
-            colorComandOff = settings.colorCommandOff4;
-        }
+        colorComandOn = settings.colorCommandOn4;
+        colorComandOff = settings.colorCommandOff4;
+        
+        // if (settings.color2 == stroke) {
+        //     colorComandOn = settings.colorCommandOn2;
+        //     colorComandOff = settings.colorCommandOff2;
+        // }
+        // else if (settings.color3 == stroke) {
+        //     colorComandOn = settings.colorCommandOn3;
+        //     colorComandOff = settings.colorCommandOff3;
+        // }
+        // else if (settings.color1 == stroke) {
+        //     colorComandOn = settings.colorCommandOn1;
+        //     colorComandOff = settings.colorCommandOff1;
+        // }
+        // else {
+        //     colorComandOn = settings.colorCommandOn4;
+        //     colorComandOff = settings.colorCommandOff4;
+        // }
         if (commandOnActive) {
             gcode.push(colorComandOn);
             commandOnActive = false;
         }
 
-        if (!settings.LineWithVariationIsDesactivated) {
-            var strokeWidth = path.node.strokeWidth;
-            var countZ = settings.LineWithVariationMax - settings.LineWithVariationMin;
-            var multMaxStrokeWidth = (MaxStrokeWidth - 1) == 0 ? 0 : countZ / (MaxStrokeWidth - 1);
+        // if (!settings.LineWithVariationIsDesactivated) {
+        //     var strokeWidth = path.node.strokeWidth;
+        //     var countZ = settings.LineWithVariationMax - settings.LineWithVariationMin;
+        //     console.log(countZ)
+        //     multMaxStrokeWidth = (MaxStrokeWidth - 1) == 0 ? 0 : countZ / (MaxStrokeWidth - 1);
 
-            if (isSamePath || lastSamePath) {
-                var strokeNextPath = nextPath != null ? nextPath.node.strokeWidth : strokeWidth;
-                var countZContinuo = settings.LineWithVariationMax - settings.LineWithVariationMin;
+        //     if (isSamePath || lastSamePath) {
+        //         var strokeNextPath = nextPath != null ? nextPath.node.strokeWidth : strokeWidth;
+        //         var countZContinuo = settings.LineWithVariationMax - settings.LineWithVariationMin;
 
-                var incPathWith = (multMaxStrokeWidth * (strokeWidth - 1));
-                var incNextPathWith = (multMaxStrokeWidth * (strokeNextPath - 1));
-                var dif = incNextPathWith - incPathWith;
-                var dist = 0;
-                for (var i = 1; i < path.length; i++) {
-                    dist += Math.pow(Math.pow(path[i].x - path[i - 1].x, 2) + Math.pow(path[i].y - path[i - 1].y, 2), 0.5);
-                }
+        //         var incPathWith = (multMaxStrokeWidth * (strokeWidth - 1));
+        //         var incNextPathWith = (multMaxStrokeWidth * (strokeNextPath - 1));
+        //         var dif = incNextPathWith - incPathWith;
+        //         var dist = 0;
+        //         for (var i = 1; i < path.length; i++) {
+        //             dist += Math.pow(Math.pow(path[i].x - path[i - 1].x, 2) + Math.pow(path[i].y - path[i - 1].y, 2), 0.5);
+        //         }
 
-                // keep track of the current path being cut, as we may need to reverse it
-                var localPath = [];
-                var count = 0;
-                for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
-                    var segment = path[segmentIdx];
-                    if (segmentIdx > 0) {
-                        var distp = Math.pow(Math.pow((path[segmentIdx].x - path[segmentIdx - 1].x), 2) + Math.pow((path[segmentIdx].y - path[segmentIdx - 1].y), 2), 0.5);
-                        count += (dif * distp) / dist;
-                    }
+        //         // keep track of the current path being cut, as we may need to reverse it
+        //         var localPath = [];
+        //         var count = 0;
+        //         for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
+        //             var segment = path[segmentIdx];
+        //             if (segmentIdx > 0) {
+        //                 var distp = Math.pow(Math.pow((path[segmentIdx].x - path[segmentIdx - 1].x), 2) + Math.pow((path[segmentIdx].y - path[segmentIdx - 1].y), 2), 0.5);
+        //                 count += (dif * distp) / dist;
+        //             }
 
-                    var localSegment = ['G0',
-                        'X' + scale(segment.x),
-                        'Y' + scale(height - segment.y),
-                        'Z' + (settings.LineWithVariationMin + (multMaxStrokeWidth * (strokeWidth - 1)) + count)
-                    ].join(' ');
-                    // feed through the material
-                    gcode.push(localSegment);
-                    localPath.push(localSegment);
-                }
-            }
-            else {
-                lastSamePath = false;
-                gcode.push('G0 Z5' + (settings.LineWithVariationMin + (multMaxStrokeWidth * (strokeWidth - 1))));
+        //             var localSegment = ['G1',
+        //                 'X' + scale(segment.x),
+        //                 'Y' + scale(height - segment.y),
+        //                 'Z' + (settings.LineWithVariationMin + (multMaxStrokeWidth * (strokeWidth - 1)) + count)
+        //             ].join(' ');
+        //             // feed through the material
+        //             gcode.push(localSegment);
+        //             localPath.push(localSegment);
+        //         }
+        //     }
+        //     else {
+        //         lastSamePath = false;
+        //         gcode.push('G1 Z5' + (settings.LineWithVariationMin + (multMaxStrokeWidth * (strokeWidth - 1))));
 
 
-                // keep track of the current path being cut, as we may need to reverse it
-                var localPath = [];
-                for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
-                    var segment = path[segmentIdx];
+        //         // keep track of the current path being cut, as we may need to reverse it
+        //         var localPath = [];
+        //         for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
+        //             var segment = path[segmentIdx];
 
-                    var localSegment = ['G0',
-                        'X' + scale(segment.x),
-                        'Y' + scale(height - segment.y)
-                    ].join(' ');
+        //             var localSegment = ['G1',
+        //                 'X' + scale(segment.x),
+        //                 'Y' + scale(height - segment.y)
+        //             ].join(' ');
 
-                    // feed through the material
-                    gcode.push(localSegment);
-                    localPath.push(localSegment);
-                }
-            }
-        }
-        else {
+        //             // feed through the material
+        //             gcode.push(localSegment);
+        //             localPath.push(localSegment);
+        //         }
+        //     }
+        // }
+        // // else {
             //gcode.push(settings.powerOnDelay);
 
             // keep track of the current path being cut, as we may need to reverse it
@@ -259,7 +245,7 @@ export function svg2gcode(svg, settings) {
             for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
                 var segment = path[segmentIdx];
 
-                var localSegment = ['G0',
+                var localSegment = ['G1',
                     'X' + scale(segment.x),
                     'Y' + scale(height - segment.y)
                 ].join(' ');
@@ -268,7 +254,7 @@ export function svg2gcode(svg, settings) {
                 gcode.push(localSegment);
                 localPath.push(localSegment);
             }
-        }
+        // }
 
         if (!isSamePath) {
             gcode.push(colorComandOff);
@@ -281,18 +267,9 @@ export function svg2gcode(svg, settings) {
         }
     }
 
-    // just wait there for a second
-    //gcode.push('G4 P0');
-
-    // turn off the spindle
-    //gcode.push('M5');
-
-    // go home
-    //gcode.push('G1 Z0 F300');
-    //gcode.push('G1 F' + settings.seekRate);
     gcode.push(settings.end);
-    gcode.push('G0 X0 Y0');
-    // console.log(gcode)
+    gcode.push('G1 X0 Y0');
+    console.log(gcode)
 
     return gcode.join('\n');
 }

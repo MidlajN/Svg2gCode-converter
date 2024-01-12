@@ -1,7 +1,7 @@
 // import { convertSVGtoGCodeLogic } from "./gcode";
 // window.convertSVGtoGCodeLogic = convertSVGtoGCodeLogic;
 import Converter from "./converter.js";
-import { getSettings } from "./settingsGcode.js";
+// import { getSettings } from "./settingsGcode.js";
 
 
 // setupCounter(document.querySelector('#counter'))
@@ -12,9 +12,12 @@ document.getElementById('convertBtn').addEventListener('click', ()=>{
     const reader = new FileReader()
 
     reader.onload = (e) => {
-        
         const data = e.target.result;
-        let settingsGCODE = getSettings()
+        let settingsGCODE = {
+            feedRate : 2300,
+            seekRate : 3233,
+            zOffset : 1
+        }
         let converter = new Converter(settingsGCODE);
         let gcodeArray = async () => {
             await converter.convert(data).then((gCodeArray) =>{
