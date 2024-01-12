@@ -7,7 +7,6 @@ class Converter {
         this.settings = {}
         this.settings.colorCommandOn4 = "\nG0 Z0 ;ON"
         this.settings.end = "\nG0 X0 Y0;end of file"
-        // this.settings.LineWithVariationIsDesactivated = false
 
         let zOffset = Settings.zOffset ? Settings.zOffset : 2
         let feedRate = Settings.feedRate ? Settings.feedRate : 1400
@@ -23,7 +22,6 @@ class Converter {
     async convert(svgData) {
 
         return new Promise((resolve, reject) => {
-
             let tree = XMLparser.XMLparse(svgData, { preserveAttributes: false, preserveDocumentNode: false })
             console.log(tree)
             const treeView = tree.getTree()
@@ -31,8 +29,7 @@ class Converter {
                 svgViewBox = tree.getTree().viewBox.split(' ')
             } else {
                 svgViewBox = ''
-            }
-            
+            }           
 
             console.log('IMAGSFDFAS :ASLKFJAS:FLKJ :LASKFJ :LASKFJ', tree)
 
@@ -63,7 +60,6 @@ class Converter {
                     gcodeString = this.removeDuplicatedLines(gcodeString)
                     console.log('[+] Conversion done !\n ---------------------------------------------------')
                     gcodeStrings.push(gcodeString)
-
                 }
                 resolve(gcodeStrings)
             } else {
@@ -76,12 +72,8 @@ class Converter {
                 gcode = this.removeDuplicatedLines(gcode)
                 console.log('[+] Conversion done !\n ---------------------------------------------------')
                 resolve([gcode])
-
             }
-
         })
-
-
     }
 
     removeDuplicatedLines(gcodestring) {

@@ -1,46 +1,9 @@
-/**
-  SVG parser for the Lasersaur.
-  Converts SVG DOM to a flat collection of paths.
 
-  Copyright (c) 2011 Nortd Labs
-  Open Source by the terms of the Gnu Public License (GPL3) or higher.
-
-  Code inspired by cake.js, canvg.js, svg2obj.py, and Squirtle.
-  Thank you for open sourcing your work!
-
-  Usage:
-  var boundarys = SVGReader.parse(svgstring, config)
-
-  Features:
-    * <svg> width and height, viewBox clipping.
-    * paths, rectangles, ellipses, circles, lines, polylines and polygons
-    * nested transforms
-    * transform lists (transform="rotate(30) translate(2,2) scale(4)")
-    * non-pixel units (cm, mm, in, pt, pc)
-    * 'style' attribute and presentation attributes
-    * curves, arcs, cirles, ellipses tesellated according to tolerance
-
-  Intentinally not Supported:
-    * markers
-    * masking
-    * em, ex, % units
-    * text (needs to be converted to paths)
-    * raster images
-    * style sheets
-
-  ToDo:
-    * check for out of bounds geometry
-*/
 
 import { SVGReader } from "./svgreader"
 let paths;
 let gcode = [];
 let path;
-// let multMaxStrokeWidth;
-// let MaxStrokeWidth;
-
-
-
 let scale = function (val) { // val is a point value
     let tmp = 0.352778 * val
     if (tmp.toString().indexOf('.') == -1) {
@@ -53,32 +16,6 @@ let scale = function (val) { // val is a point value
 }
 
 export function svg2gcode(svg, settings) {
-    // clean off any preceding whitespace
-    // settings = settings || {};
-    // settings.start = settings.start ? settings.start : "";// end
-    // settings.materialWidth = settings.materialWidth || 1;
-    // settings.passWidth = 1;
-    // settings.end = settings.end ? settings.end : "";// end
-    // settings.lazerOff = settings.lazerOff ? settings.lazerOff : ""; // lazerOff
-    // settings.lazerOn = settings.lazerOn ? settings.lazerOn : "";   // lazerOn
-    // settings.cutZ = settings.cutZ || 1; // cut z
-    // settings.safeZ = settings.safeZ || 1;   // safe z
-    // settings.feedRate = settings.feedRate || 1400;
-    // settings.seekRate = settings.seekRate || 1100;
-    // settings.bitWidth = settings.bitWidth || 1; // in mm
-
-    // settings.colorCommandOn1 = settings.colorCommandOn1 || "";
-    // settings.colorCommandOff1 = settings.colorCommandOff1 || "";
-    // settings.colorCommandOn2 = settings.colorCommandOn2 || "";
-    // settings.colorCommandOff2 = settings.colorCommandOff2 || "";
-    // settings.colorCommandOn3 = settings.colorCommandOn3 || "";
-    // settings.colorCommandOff3 = settings.colorCommandOff3 || "";
-
-    // settings.color1 = settings.color1Text;
-    // settings.color2 = settings.color2Text;
-    // settings.color3 = settings.color3Text;
-
-    // console.log(svg)
 
     paths = SVGReader.parse(svg, {}).allcolors
 
@@ -122,7 +59,7 @@ export function svg2gcode(svg, settings) {
     gcode.push('G0 F' + settings.seekRate);
     gcode.push(['G90', 'G21'].join(' '));
 
-    //getting heighy
+    //getting height
     let height = svg.viewBox[3]
     console.log(height)
     // TODO : change height to something real
@@ -135,14 +72,12 @@ export function svg2gcode(svg, settings) {
         counter++
         path = paths[pathIdx];
 
-
         var nextPath = paths[pathIdx + 1];
         var finalPathX = nextPath != null ? scale(nextPath[0].x) : -1;
         var finalPathY = nextPath != null ? scale(height - nextPath[0].y) : -1;
         var initialPathX = scale(path[path.length - 1].x);
         var initialPathY = scale(height - path[path.length - 1].y);
         var isSamePath = finalPathX == initialPathX && finalPathY == initialPathY;
-
 
         // seek to index 0
         gcode.push(['G0',
@@ -151,110 +86,31 @@ export function svg2gcode(svg, settings) {
         ].join(' '));
 
         gcode.push('G0 F' + settings.feedRate);
-        // var stroke = path.node.stroke.split("#")[1];
+
         var colorComandOn = "";
         var colorComandOff = "";
+
         colorComandOn = settings.colorCommandOn4;
         colorComandOff = settings.colorCommandOff4;
-        
-        // if (settings.color2 == stroke) {
-        //     colorComandOn = settings.colorCommandOn2;
-        //     colorComandOff = settings.colorCommandOff2;
-        // }
-        // else if (settings.color3 == stroke) {
-        //     colorComandOn = settings.colorCommandOn3;
-        //     colorComandOff = settings.colorCommandOff3;
-        // }
-        // else if (settings.color1 == stroke) {
-        //     colorComandOn = settings.colorCommandOn1;
-        //     colorComandOff = settings.colorCommandOff1;
-        // }
-        // else {
-        //     colorComandOn = settings.colorCommandOn4;
-        //     colorComandOff = settings.colorCommandOff4;
-        // }
         if (commandOnActive) {
             gcode.push(colorComandOn);
             commandOnActive = false;
         }
 
-        // if (!settings.LineWithVariationIsDesactivated) {
-        //     var strokeWidth = path.node.strokeWidth;
-        //     var countZ = settings.LineWithVariationMax - settings.LineWithVariationMin;
-        //     console.log(countZ)
-        //     multMaxStrokeWidth = (MaxStrokeWidth - 1) == 0 ? 0 : countZ / (MaxStrokeWidth - 1);
+        // keep track of the current path being cut, as we may need to reverse it
+        var localPath = [];
+        for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
+            var segment = path[segmentIdx];
 
-        //     if (isSamePath || lastSamePath) {
-        //         var strokeNextPath = nextPath != null ? nextPath.node.strokeWidth : strokeWidth;
-        //         var countZContinuo = settings.LineWithVariationMax - settings.LineWithVariationMin;
+            var localSegment = ['G1',
+                'X' + scale(segment.x),
+                'Y' + scale(height - segment.y)
+            ].join(' ');
 
-        //         var incPathWith = (multMaxStrokeWidth * (strokeWidth - 1));
-        //         var incNextPathWith = (multMaxStrokeWidth * (strokeNextPath - 1));
-        //         var dif = incNextPathWith - incPathWith;
-        //         var dist = 0;
-        //         for (var i = 1; i < path.length; i++) {
-        //             dist += Math.pow(Math.pow(path[i].x - path[i - 1].x, 2) + Math.pow(path[i].y - path[i - 1].y, 2), 0.5);
-        //         }
-
-        //         // keep track of the current path being cut, as we may need to reverse it
-        //         var localPath = [];
-        //         var count = 0;
-        //         for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
-        //             var segment = path[segmentIdx];
-        //             if (segmentIdx > 0) {
-        //                 var distp = Math.pow(Math.pow((path[segmentIdx].x - path[segmentIdx - 1].x), 2) + Math.pow((path[segmentIdx].y - path[segmentIdx - 1].y), 2), 0.5);
-        //                 count += (dif * distp) / dist;
-        //             }
-
-        //             var localSegment = ['G1',
-        //                 'X' + scale(segment.x),
-        //                 'Y' + scale(height - segment.y),
-        //                 'Z' + (settings.LineWithVariationMin + (multMaxStrokeWidth * (strokeWidth - 1)) + count)
-        //             ].join(' ');
-        //             // feed through the material
-        //             gcode.push(localSegment);
-        //             localPath.push(localSegment);
-        //         }
-        //     }
-        //     else {
-        //         lastSamePath = false;
-        //         gcode.push('G1 Z5' + (settings.LineWithVariationMin + (multMaxStrokeWidth * (strokeWidth - 1))));
-
-
-        //         // keep track of the current path being cut, as we may need to reverse it
-        //         var localPath = [];
-        //         for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
-        //             var segment = path[segmentIdx];
-
-        //             var localSegment = ['G1',
-        //                 'X' + scale(segment.x),
-        //                 'Y' + scale(height - segment.y)
-        //             ].join(' ');
-
-        //             // feed through the material
-        //             gcode.push(localSegment);
-        //             localPath.push(localSegment);
-        //         }
-        //     }
-        // }
-        // // else {
-            //gcode.push(settings.powerOnDelay);
-
-            // keep track of the current path being cut, as we may need to reverse it
-            var localPath = [];
-            for (var segmentIdx = 0, segmentLength = path.length; segmentIdx < segmentLength; segmentIdx++) {
-                var segment = path[segmentIdx];
-
-                var localSegment = ['G1',
-                    'X' + scale(segment.x),
-                    'Y' + scale(height - segment.y)
-                ].join(' ');
-
-                // feed through the material
-                gcode.push(localSegment);
-                localPath.push(localSegment);
-            }
-        // }
+            // feed through the material
+            gcode.push(localSegment);
+            localPath.push(localSegment);
+        }
 
         if (!isSamePath) {
             gcode.push(colorComandOff);

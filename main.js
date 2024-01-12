@@ -1,10 +1,5 @@
-// import { convertSVGtoGCodeLogic } from "./gcode";
-// window.convertSVGtoGCodeLogic = convertSVGtoGCodeLogic;
 import Converter from "./converter.js";
-// import { getSettings } from "./settingsGcode.js";
 
-
-// setupCounter(document.querySelector('#counter'))
 document.getElementById('convertBtn').addEventListener('click', ()=>{
     const svgInput = document.getElementById('svgInput');
     const svgFile = svgInput.files[0]
