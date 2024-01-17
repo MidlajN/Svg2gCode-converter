@@ -14,9 +14,9 @@ class Converter {
         this.settings.colorCommandOn4 = "\nG0 Z0 ;ON"
         this.settings.end = "\nG0 X0 Y0;end of file"
 
-        let zOffset = Settings.zOffset ? Settings.zOffset : 2
-        let feedRate = Settings.feedRate ? Settings.feedRate : 1400
-        let seekRate = Settings.seekRate ? Settings.seekRate : 1100
+        let zOffset = (Settings && Settings.zOffset) ? Settings.zOffset : 2
+        let feedRate = (Settings && Settings.feedRate) ? Settings.feedRate : 1400
+        let seekRate = (Settings && Settings.seekRate) ? Settings.seekRate : 1100
 
         this.settings.start = `\nG0 Z${zOffset}`
         this.settings.colorCommandOff4 = `\nG0 Z${zOffset} ;OFF`
@@ -29,15 +29,12 @@ class Converter {
 
         return new Promise((resolve, reject) => {
             let tree = XMLparser.XMLparse(svgData, { preserveAttributes: false, preserveDocumentNode: false })
-            console.log(tree)
             const treeView = tree.getTree()
             if (tree.getTree().viewBox){
                 svgViewBox = tree.getTree().viewBox.split(' ')
             } else {
                 svgViewBox = ''
             }           
-
-            console.log('IMAGSFDFAS :ASLKFJAS:FLKJ :LASKFJ :LASKFJ', tree)
 
             // tree view can be splitted in several layers
             const treeLayers = []
