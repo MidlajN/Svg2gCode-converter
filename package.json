@@ -10,7 +10,7 @@
     "vite": "^5.0.8"
   },
   "dependencies": {},
-  "description": "A Website for generating gcode for the plotter from a given svg file",
+  "description": "Convert SVG files to G-code for plotter",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MidlajN/Svg2gCode-converter.git"
@@ -21,7 +21,9 @@
     "gcode",
     "plotter",
     "cnc",
-    "parser"
+    "parser",
+    "svg to gcode",
+    "svg converter"
   ],
   "license": "ISC",
   "bugs": {
