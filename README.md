@@ -11,6 +11,26 @@ Install the package using npm:
 ```bash
 npm install svg-to-gcode
 ```
+Or, use a script tag :
+```javascript
+<script src="https://unpkg.com/svg-to-gcode@^1.0.0/dist/svg-to-gcode.js"></script>
+
+<script>
+    // Configuration for the plotter gcode
+    let settings = {
+        zOffset : 3,
+        feedRate : 1500,
+        seekRate : 1200
+    }
+    // For using the default configuration , skip the settings
+    const converter = SvgToGcode(settings)
+    converter.convert(svgString).then((gcode) => {
+        // Manipulate the recieved gcode
+        console.log(gcode)
+    })
+</script>
+
+```
 ## Usage
 ```javascript
 
