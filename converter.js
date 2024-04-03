@@ -38,7 +38,7 @@ class Converter {
 
             // tree view can be splitted in several layers
             const treeLayers = []
-            if (treeView.g.length) {
+            if (tree.g && tree.g.length) {
                 //multi export
                 for (let i = 0; i < treeView.g.length; i++) {
                     console.log('new layer detected, export seperately...')
@@ -67,9 +67,11 @@ class Converter {
                 resolve(gcodeStrings)
             } else {
                 // single layer
-                let XMLRepresentation = getRepresentation(treeView.g)
+                let XMLRepresentation = getRepresentation(treeView)
+                // console.log('[+] Getting XML representation ...', XMLRepresentation, 'treeView', treeView)
                 XMLRepresentation.viewBox = svgViewBox
                 console.log('[+] Converting ...')
+                // console.log('[+] Getting XML representation ...', XMLRepresentation)
                 let gcode = svg2gcode(XMLRepresentation, this.settings)
                 console.log('[+] optimization ...')
                 gcode = this.removeDuplicatedLines(gcode)
@@ -84,7 +86,6 @@ class Converter {
             return pos === 0 || item != arr[pos - 1]
         }).join('\n')
         return tmp
-
     }
 }
 

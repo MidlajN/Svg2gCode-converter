@@ -11,10 +11,18 @@ import {
 
 
 export function getRepresentation(tree) {
-    var node = {
+    let id;
+    if (tree && tree.id) {
+        id = tree.id;
+      } else {
+        id = 'svg';
+      }
+      
+    //   var node;
+    let node = {
         tagName: 'svg',
         nodeName: 'svg',
-        id: tree['id'],
+        id: id,
 
         attributes: [
             { localName: 'xmlns', name: 'xmlns', nodeName: 'xmlns', nodeValue: tree['xmlns'], textContent: tree['xmlns'], value: tree['xmlns'] },
@@ -181,7 +189,6 @@ export function getRepresentation(tree) {
         sortNodes[p] = node.childNodes[i];
     }
     node.childNodes = sortNodes;
-
 
     return node;
 

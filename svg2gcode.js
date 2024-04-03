@@ -16,9 +16,10 @@ let scale = function (val) { // val is a point value
 export function svg2gcode(svg, settings) {
 
     paths = SVGReader.parse(svg, {}).allcolors
+    // console.log('paths : ', paths, 'svg : ', svg)
 
     var idx = paths.length;
-    console.log('number of paths : ', idx)
+    // console.log('number of paths : ', idx)
     while (idx--) {
         var subidx = paths[idx].length;
         var bounds = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity, area: 0 };
@@ -59,7 +60,7 @@ export function svg2gcode(svg, settings) {
 
     //getting height
     let height = svg.viewBox[3]
-    console.log(height)
+    // console.log(height)
     // TODO : change height to something real
     var lastSamePath = false;
 
@@ -123,7 +124,7 @@ export function svg2gcode(svg, settings) {
 
     gcode.push(settings.end);
     gcode.push('G1 X0 Y0');
-    console.log(gcode)
+    // console.log(gcode)
 
     return gcode.join('\n');
 }

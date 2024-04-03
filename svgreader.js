@@ -42,11 +42,11 @@ export const SVGReader = {
     parseChildren: function (domNode, firstParent) {
 
         /** The script will crash if it is run several times without closing,
-      because domNode gets corrupted. Here, domNode is only read to dNode the first pass
-      and dnode will be used for following passes.
-      /Gunnar
-     */
-    var dNode;
+         because domNode gets corrupted. Here, domNode is only read to dNode the first pass
+        and dnode will be used for following passes.
+        /Gunnar
+        */
+        var dNode;
         if (first_run) {
              dNode = domNode;
             first_run = false;
@@ -55,9 +55,11 @@ export const SVGReader = {
 
         var parentChilds = [[dNode, {}]];
         var node = firstParent;
+
         for (var i = 0; i < parentChilds.length; i++) {
             var tag = parentChilds[i][0];
             var parentNode = parentChilds[i][1];
+            
             if (tag.childNodes && i > 0) {
                 if (tag.tagName) {
                     // we are looping here through
@@ -68,19 +70,21 @@ export const SVGReader = {
                     // and inherit from parent
                     node = {};
                     node.path = [];
+                    
                     node.xform = [1, 0, 0, 1, 0, 0];
-                    node.opacity = parentNode.opacity;
-                    node.display = parentNode.display;
-                    node.visibility = parentNode.visibility;
+                    // node.opacity = parentNode.opacity;
+                    // node.display = parentNode.display;
+                    // node.visibility = parentNode.visibility;
                     node.fill = parentNode.fill;
                     node.stroke = parentNode.stroke;
-                    node.color = parentNode.color;
-                    node.fillOpacity = parentNode.fillOpacity;
-                    node.strokeOpacity = parentNode.strokeOpacity;
+                    // node.color = parentNode.color;
+                    // node.fillOpacity = parentNode.fillOpacity;
+                    // node.strokeOpacity = parentNode.strokeOpacity;
 
                     node.strokeWidth = tag.attributes[tag.attributes.length - 1].value == null ? 1 : tag.attributes[tag.attributes.length - 1].value;
                     MaxStrokeWidth = node.strokeWidth > MaxStrokeWidth ? node.strokeWidth : MaxStrokeWidth;
 
+                    // console.log('node', node)
                     // 2.) parse own attributes and overwrite
                     if (tag.attributes) {
                         for (var j = 0; j < tag.attributes.length; j++) {
@@ -102,15 +106,20 @@ export const SVGReader = {
                         //}
                     }
 
+                    // console.log('node', node)
                     // 5.) compile boundarys
                     // before adding all path data convert to world coordinates
+
+                    // console.log('node', node)
                     for (var k = 0; k < node.path.length; k++) {
                         var subpath = node.path[k];
                         for (var l = 0; l < node.path[k].length; l++) {
+                            // console.log('OLD SubPath : ', subpath[l])
                             var tmp = this.matrixApply(node.xformToWorld, subpath[l]);
                             subpath[l] = new Vec2(tmp[0], tmp[1]);
+                            // console.log('NEW SubPath : ', subpath[l])
                         }
-                        subpath.node = node;
+                        // subpath.node = node;
 
                         this.boundarys.allcolors.push(subpath);
                     }
@@ -121,6 +130,7 @@ export const SVGReader = {
                 parentChilds.push([parentChilds[i][0].childNodes[j], node]);
             }
         }
+        // console.log('ParentChilds', parentChilds)
     },
 
     //~   parseChildren : function(domNode, parentNode) {
@@ -613,7 +623,9 @@ export const SVGReader = {
 
         var tolerance2 = this.tolerance_squared;
         var totalMaxScale = this.matrixGetScale(node.xformToWorld);
-        if (totalMaxScale != 0) {
+
+        // console.log("totalMaxScale : " + tolerance2);
+        if (totalMaxScale !== 0) {
             // adjust for possible transforms
             tolerance2 /= Math.pow(totalMaxScale, 2);
             // $().uxmessage('notice', "tolerance2: " + tolerance2.toString());
@@ -652,6 +664,7 @@ export const SVGReader = {
         var subpath = [];
 
         while (d.length > 0) {
+            console.log('d', d)
             var cmd = getNext();
             // process.stdout.clearLine()
             // process.stdout.cursorTo(0)
@@ -927,6 +940,7 @@ export const SVGReader = {
         // finalize subpath
         if (subpath.length > 0) {
             node.path.push(subpath);
+            // console.log('node.path : ', node.path)
             subpath = [];
         }
     },
@@ -977,6 +991,8 @@ export const SVGReader = {
         // Continue subdivision
         this.addCubicBezier(subpath, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1, tolerance2);
         this.addCubicBezier(subpath, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1, tolerance2);
+
+        
     },
 
 

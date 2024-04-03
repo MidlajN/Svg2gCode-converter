@@ -451,6 +451,8 @@ export function getPolylines(treePolylines, polylines) {
 }
 
 export function getPaths(treePaths, paths) {
+    // console.log('treePaths', treePaths)
+    
     var currentNodes = [];
     if (treePaths.length) {
         for (var i = 0; i < treePaths.length; i++) {
@@ -458,7 +460,6 @@ export function getPaths(treePaths, paths) {
         }
         var len = currentNodes.length;
         for (var i = 0; i < currentNodes.length; i++) {
-
             if (currentNodes[i].length) {
                 for (var j = 0; j < currentNodes[i].length; j++) {
                     currentNodes.push(currentNodes[i][j]);
