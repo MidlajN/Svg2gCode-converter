@@ -113,9 +113,11 @@ export const SVGReader = {
                     // console.log('node', node)
                     for (var k = 0; k < node.path.length; k++) {
                         var subpath = node.path[k];
+                        // console.log('subpath', subpath)
                         for (var l = 0; l < node.path[k].length; l++) {
                             // console.log('OLD SubPath : ', subpath[l])
                             var tmp = this.matrixApply(node.xformToWorld, subpath[l]);
+                            // console.log('temp : ', node.xformToWorld, '->', subpath[l], '->', tmp)
                             subpath[l] = new Vec2(tmp[0], tmp[1]);
                             // console.log('NEW SubPath : ', subpath[l])
                         }
@@ -499,10 +501,13 @@ export const SVGReader = {
             var x = parser.parseUnit(getAttribute(tag, 'x')) || 0;
             var y = parser.parseUnit(getAttribute(tag, 'y')) || 0;
             var rx = parser.parseUnit(getAttribute(tag, 'rx')) || 0;
-            var ry = parser.parseUnit(getAttribute(tag, 'ry')) || 0;
+            var ry = parser.parseUnit(getAttribute(tag, 'ry')) || null;
+
+            console.log('RECT >>>', '\nw :', w, '\nh : ', h, '\nx : ', x, '\ny : ', y, '\nrx : ', rx, '\nry : ', ry)
 
             if (rx == null || ry == null) {  // no rounded corners
                 var d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
+                console.log('d :', d)
                 parser.addPath(d, node)
             } else {                       // rounded corners
                 if ('ry' == null) { ry = rx; }
@@ -518,6 +523,7 @@ export const SVGReader = {
                     'v', -h + ry,
                     'c', '0.0', '0.0', '0.0', -ry, rx, -ry,
                     'z'];
+                    console.log('d :', d)
                 parser.addPath(d, node)
             }
         },
@@ -664,7 +670,7 @@ export const SVGReader = {
         var subpath = [];
 
         while (d.length > 0) {
-            console.log('d', d)
+            // console.log('d', d)
             var cmd = getNext();
             // process.stdout.clearLine()
             // process.stdout.cursorTo(0)
@@ -936,6 +942,7 @@ export const SVGReader = {
                     break
             }
             cmdPrev = cmd;
+            // console.log('subpath : ', subpath, 'cmd : ', cmd, 'x : ', x, 'y : ', y)
         }
         // finalize subpath
         if (subpath.length > 0) {
@@ -1108,19 +1115,24 @@ export const SVGReader = {
         if (val == null) {
             return null
         } else {
-            // assume 90dpi
+            val = val.toLowerCase();
+            // assume 96dpi
+            // const unit = val.replace(/\d|-/g, "")
+            // console.log('unit: ' + unit)
+
             var multiplier = 1.0
             if (val.search(/cm$/i) != -1) {
-                multiplier = 35.433070869
+                multiplier = 37.79527559
             } else if (val.search(/mm$/i) != -1) {
-                multiplier = 3.5433070869
+                multiplier = 3.779527559   // Changed from 3.5433070869 to  3.779527559 for 96 dpi instead of 90 dpi
             } else if (val.search(/pt$/i) != -1) {
                 multiplier = 1.25
             } else if (val.search(/pc$/i) != -1) {
                 multiplier = 15.0
             } else if (val.search(/in$/i) != -1) {
-                multiplier = 90.0
+                multiplier = 96.0
             }
+            // console.log('multiplier: ' + multiplier * parseFloat(val))
             return multiplier * parseFloat(val)
         }
     },

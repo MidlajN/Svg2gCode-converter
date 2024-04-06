@@ -7,6 +7,7 @@
 import { XMLparser } from './xmlParser.js';
 import { getRepresentation } from './getRepresentation.js';
 import { svg2gcode } from './svg2gcode.js';
+import SVGO from 'svgo';
 let svgViewBox;
 class Converter {
     constructor(Settings) {
@@ -26,9 +27,41 @@ class Converter {
     }
 
     async convert(svgData) {
+        const svgoConfig = {
+            js2svg: { indent: 2, pretty: true },
+            plugins: [
+                "cleanupIds",
+                "removeDoctype",
+                "removeXMLProcInst",
+                "removeComments",
+                "removeXMLNS",
+                "convertStyleToAttrs",
+                "collapseGroups",
+                "convertEllipseToCircle",
+                "convertShapeToPath",
+                // "removeDimensions",
+                "removeEditorsNSData",
+                "removeRasterImages",
+                "removeUselessDefs",
+                "removeUnknownsAndDefaults",
+                "moveGroupAttrsToElems",
+                "removeDesc",
+                "convertColors",
+                "sortAttrs",
+                "removeUselessStrokeAndFill",
+                "removeXMLNS",
+                "convertTransform",   
+                "removeEmptyAttrs",
+                "removeEmptyContainers" ,
+                "collapseGroups",
+                "cleanupNumericValues",                                                              
+            ]
+          }
+        const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
+        console.log('Optimized SVG: ', optimizedSvg)
 
         return new Promise((resolve, reject) => {
-            let tree = XMLparser.XMLparse(svgData, { preserveAttributes: false, preserveDocumentNode: false })
+            let tree = XMLparser.XMLparse(optimizedSvg, { preserveAttributes: false, preserveDocumentNode: false })
             const treeView = tree.getTree()
             if (tree.getTree().viewBox){
                 svgViewBox = tree.getTree().viewBox.split(' ')

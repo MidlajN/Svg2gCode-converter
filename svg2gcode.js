@@ -3,23 +3,25 @@ let paths;
 let gcode = [];
 let path;
 let scale = function (val) { // val is a point value
-    let tmp = 0.352778 * val
+    // let tmp = 0.352778 * val
+    let tmp = val / 96 * 25.4;
     if (tmp.toString().indexOf('.') == -1) {
         tmp = tmp.toString() + '.0'
     }
     let split = tmp.toString().split('.')
     let decimals = split[1].substring(0, 3)
     let result = parseFloat(split[0] + "." + decimals)
+    
     return result
 }
 
 export function svg2gcode(svg, settings) {
 
     paths = SVGReader.parse(svg, {}).allcolors
-    // console.log('paths : ', paths, 'svg : ', svg)
+    console.log('paths : ', paths)
 
     var idx = paths.length;
-    // console.log('number of paths : ', idx)
+    console.log('number of paths : ', idx)
     while (idx--) {
         var subidx = paths[idx].length;
         var bounds = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity, area: 0 };
@@ -50,8 +52,8 @@ export function svg2gcode(svg, settings) {
         // sort by area
         return (a.bounds.area < b.bounds.area) ? -1 : 1;
     });
-
-    // gcode = [];
+    console.log('sorted paths : ', paths)
+    gcode = [];
 
     gcode.push(settings.start);
 
@@ -67,16 +69,17 @@ export function svg2gcode(svg, settings) {
     var commandOnActive = true;
     let counter = 0
 
-    for (var pathIdx = 0, pathLength = paths.length; pathIdx < pathLength; pathIdx++) {
+    for (var pathIdx = 0; pathIdx < paths.length; pathIdx++) {
+        // console.log('pathIdx : ', pathIdx)
         counter++
         path = paths[pathIdx];
 
-        var nextPath = paths[pathIdx + 1];
-        var finalPathX = nextPath != null ? scale(nextPath[0].x) : -1;
-        var finalPathY = nextPath != null ? scale(height - nextPath[0].y) : -1;
+        var nextPath = paths[pathIdx + 1] ? paths[pathIdx + 1] : null;
+        var finalPathX = nextPath !== null ? scale(nextPath[0].x) : -1;
+        var finalPathY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
         var initialPathX = scale(path[path.length - 1].x);
         var initialPathY = scale(height - path[path.length - 1].y);
-        var isSamePath = finalPathX == initialPathX && finalPathY == initialPathY;
+        var isSamePath = finalPathX === initialPathX && finalPathY === initialPathY;
 
         // seek to index 0
         gcode.push(['G0',
@@ -84,6 +87,7 @@ export function svg2gcode(svg, settings) {
             'Y' + scale(height - path[0].y)
         ].join(' '));
 
+        // console.log('gCode : ', gcode)
         gcode.push('G0 F' + settings.feedRate);
 
         var colorComandOn = "";
