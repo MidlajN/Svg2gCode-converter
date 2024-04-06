@@ -375,3 +375,33 @@ export const XMLparser = {
         return xml;
     },
 }
+
+
+class XMLParser {
+    constructor(svg = null, options = {}) {
+        if (!svg) return
+
+        this.svg = svg
+        this.options = {
+            patTag: /([^<]*?)<([^>]+)>/g,
+            preserveDocumentNode: true,
+            preserveAttributes: false,
+            preserveWhitespace: false,
+            lowerCase: false,
+            forceArrays: false,
+            ...options
+        }
+        this.tree = {};
+        this.errors = [];
+        this.piNodeList = [];
+        this.dtdNodeList = [];
+        this.documentNodeName = '';
+
+        this.options.patTag.lastIndex = 0;
+        this.parse();
+    }
+
+    parse() {
+        
+    }
+}

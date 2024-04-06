@@ -4,7 +4,7 @@
  *  Credit goes to the original authors for their work on exportSVGtoGCODE."
  */
 
-import { XMLparser } from './xmlParser.js';
+import { XMLparser, newXMLParser } from './xmlParser.js';
 import { getRepresentation } from './getRepresentation.js';
 import { svg2gcode } from './svg2gcode.js';
 import SVGO from 'svgo';
@@ -58,10 +58,11 @@ class Converter {
             ]
           }
         const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
-        console.log('Optimized SVG: ', optimizedSvg)
+        // console.log('Optimized SVG: ', optimizedSvg)
 
         return new Promise((resolve, reject) => {
-            let tree = XMLparser.XMLparse(optimizedSvg, { preserveAttributes: false, preserveDocumentNode: false })
+            let tree = newXMLParser.XMLparse(optimizedSvg, { preserveAttributes: false, preserveDocumentNode: false })
+            console.log('tree', tree)
             const treeView = tree.getTree()
             if (tree.getTree().viewBox){
                 svgViewBox = tree.getTree().viewBox.split(' ')
