@@ -11,33 +11,34 @@ import {
 
 
 export function getRepresentation(tree) {
-    let id;
-    if (tree && tree.id) {
-        id = tree.id;
-      } else {
-        id = 'svg';
-      }
+    // let id;
+    // if (tree && tree.id) {
+    //     id = tree.id;
+    //   } else {
+    //     id = 'svg';
+    //   }
       
-    //   var node;
-    let node = {
-        tagName: 'svg',
-        nodeName: 'svg',
-        id: id,
+    let node = {};
+    node.childNodes = [];
+    // let node = {
+    //     tagName: 'svg',
+    //     nodeName: 'svg',
+    //     id: id,
 
-        attributes: [
-            { localName: 'xmlns', name: 'xmlns', nodeName: 'xmlns', nodeValue: tree['xmlns'], textContent: tree['xmlns'], value: tree['xmlns'] },
-            { localName: 'xmlns:xlink', name: 'xmlns:xlink', nodeName: 'xmlns:xlink', nodeValue: tree['xmlns:xlink'], textContent: tree['xmlns:xlink'], value: tree['xmlns:xlink'] },
-            { localName: 'version', name: 'version', nodeName: 'version', nodeValue: tree['version'], textContent: tree['version'], value: tree['version'] },
-            { localName: 'id', name: 'id', nodeName: 'id', nodeValue: tree['id'], textContent: tree['id'], value: tree['id'] },
-            { localName: 'x', name: 'x', nodeName: 'x', nodeValue: tree['x'], textContent: tree['x'], value: tree['x'] },
-            { localName: 'y', name: 'y', nodeName: 'y', nodeValue: tree['y'], textContent: tree['y'], value: tree['y'] },
-            { localName: 'viewbox', name: 'viewbox', nodeName: 'viewbox', nodeValue: tree['viewbox'], textContent: tree['viewbox'], value: tree['viewbox'] },
-            { localName: 'enable-background', name: 'enable-background', nodeName: 'enable-background', nodeValue: tree['enable-background'], textContent: tree['enable-background'], value: tree['viewbox'] },
-            { localName: 'xml:space', name: 'xml:space', nodeName: 'xml:space', nodeValue: tree['xml:space'], textContent: tree['xml:space'], value: tree['xml:space'] }
-        ],
-        childNodes: [],
-        children: [],
-    };
+    //     attributes: [
+    //         { localName: 'xmlns', name: 'xmlns', nodeName: 'xmlns', nodeValue: tree['xmlns'], textContent: tree['xmlns'], value: tree['xmlns'] },
+    //         { localName: 'xmlns:xlink', name: 'xmlns:xlink', nodeName: 'xmlns:xlink', nodeValue: tree['xmlns:xlink'], textContent: tree['xmlns:xlink'], value: tree['xmlns:xlink'] },
+    //         { localName: 'version', name: 'version', nodeName: 'version', nodeValue: tree['version'], textContent: tree['version'], value: tree['version'] },
+    //         { localName: 'id', name: 'id', nodeName: 'id', nodeValue: tree['id'], textContent: tree['id'], value: tree['id'] },
+    //         { localName: 'x', name: 'x', nodeName: 'x', nodeValue: tree['x'], textContent: tree['x'], value: tree['x'] },
+    //         { localName: 'y', name: 'y', nodeName: 'y', nodeValue: tree['y'], textContent: tree['y'], value: tree['y'] },
+    //         { localName: 'viewbox', name: 'viewbox', nodeName: 'viewbox', nodeValue: tree['viewbox'], textContent: tree['viewbox'], value: tree['viewbox'] },
+    //         { localName: 'enable-background', name: 'enable-background', nodeName: 'enable-background', nodeValue: tree['enable-background'], textContent: tree['enable-background'], value: tree['viewbox'] },
+    //         { localName: 'xml:space', name: 'xml:space', nodeName: 'xml:space', nodeValue: tree['xml:space'], textContent: tree['xml:space'], value: tree['xml:space'] }
+    //     ],
+    //     childNodes: [],
+    //     children: [],
+    // };
 
 
     var treeRects = tree.rect;
@@ -48,7 +49,7 @@ export function getRepresentation(tree) {
     var treeLines = tree.line;
     var treeG = tree.g;
     var treePolylines = tree.polyline;
-    var treeSymbol = tree.symbol;
+    // var treeSymbol = tree.symbol;
 
     var gs = {};
     gs.rect = [];

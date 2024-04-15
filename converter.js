@@ -4,7 +4,7 @@
  *  Credit goes to the original authors for their work on exportSVGtoGCODE."
  */
 
-import {  newXMLParser } from './xmlParser.js';
+import {  XMLParser } from './xmlParser.js';
 import { getRepresentation } from './getRepresentation.js';
 import { svg2gcode } from './svg2gcode.js';
 import SVGO from 'svgo';
@@ -58,13 +58,11 @@ class Converter {
             ]
           }
         const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
-        // console.log('Optimized SVG: ', optimizedSvg)
+        // console.log('Op timized SVG: ', optimizedSvg)
 
         return new Promise((resolve, reject) => {
-            let tree = new newXMLParser(optimizedSvg, {})
-            console.log('newTree , ', tree)
-            // let tree = XMLparser.XMLparse(optimizedSvg, { preserveAttributes: false, preserveDocumentNode: false })
-            console.log('tree', tree)
+            let tree = new XMLParser(svgData, {})
+
             const treeView = tree.getTree()
             if (tree.getTree().viewBox){
                 svgViewBox = tree.getTree().viewBox.split(' ')
@@ -72,6 +70,7 @@ class Converter {
                 svgViewBox = ''
             }           
 
+            // console.log('Tree View: ', treeView)
             // tree view can be splitted in several layers
             const treeLayers = []
             if (tree.g && tree.g.length) {
@@ -104,7 +103,7 @@ class Converter {
             } else {
                 // single layer
                 let XMLRepresentation = getRepresentation(treeView)
-                // console.log('[+] Getting XML representation ...', XMLRepresentation, 'treeView', treeView)
+                console.log('[+] Getting XML representation ...', XMLRepresentation, 'treeView', treeView)
                 XMLRepresentation.viewBox = svgViewBox
                 console.log('[+] Converting ...')
                 // console.log('[+] Getting XML representation ...', XMLRepresentation)

@@ -18,6 +18,7 @@ export const SVGReader = {
 
     
     parse: function (svgstring, config) {
+        // console.log('SVG Reader', svgstring)
         first_run = true
         this.tolerance_squared = Math.pow(this.tolerance, 2);
         
@@ -33,6 +34,7 @@ export const SVGReader = {
         node.xformToWorld = [1, 0, 0, 1, 0, 0]
         this.parseChildren(svgRootElement, node)
 
+        console.log(svgRootElement, node)
         first_run = false
         return this.boundarys
     },
