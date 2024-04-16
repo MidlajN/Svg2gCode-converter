@@ -17,7 +17,7 @@ let scale = function (val) { // val is a point value
 
 export function svg2gcode(svg, settings) {
 
-    paths = SVGReader.parse(svg, {}).allcolors
+    paths = SVGReader.parse(svg, {}).allcolors;
     console.log('paths : ', paths)
 
     var idx = paths.length;
