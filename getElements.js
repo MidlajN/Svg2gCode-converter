@@ -151,424 +151,426 @@ export function exportItem(item) {
     exportSVG(exportDoc, name, item.visibleBounds, svgOptions);
 }
 
-export function getRects(treeRects, rects) {
-    var currentNodes = [];
-    if (treeRects.length) {
-        for (var i = 0; i < treeRects.length; i++) {
-            currentNodes.push(treeRects[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
+// export function getRects(treeRects, rects) {
+//     getSVGShape(treeRects, rects)
+//     // var currentNodes = [];
+//     // console.log(treeRects)
+//     // if (treeRects.length) {
+//     //     for (var i = 0; i < treeRects.length; i++) {
+//     //         currentNodes.push(treeRects[i]);
+//     //     }
+//     //     var len = currentNodes.length;
+//     //     for (var i = 0; i < currentNodes.length; i++) {
 
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                rects.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'rect',
-                    nodeName: 'rect',
-                    nodeValue: null,
-                    tagName: 'rect',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'x', name: 'x', nodeName: 'x', nodeValue: currentNodes[i]['x'], textContent: currentNodes[i]['x'], value: currentNodes[i]['x'] },
-                        { childNodes: [], localName: 'y', name: 'y', nodeName: 'y', nodeValue: currentNodes[i]['y'], textContent: currentNodes[i]['y'], value: currentNodes[i]['y'] },
-                        { childNodes: [], localName: 'width', name: 'width', nodeName: 'width', nodeValue: currentNodes[i]['width'], textContent: currentNodes[i]['width'], value: currentNodes[i]['width'] },
-                        { childNodes: [], localName: 'height', name: 'height', nodeName: 'height', nodeValue: currentNodes[i]['height'], textContent: currentNodes[i]['height'], value: currentNodes[i]['height'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
-        rects.push({
-            childNodes: [],
-            children: [],
-            localName: 'rect',
-            nodeName: 'rect',
-            nodeValue: null,
-            tagName: 'rect',
-            textContent: '',
-            indexNodeXML: treeRects['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'x', name: 'x', nodeName: 'x', nodeValue: treeRects['x'], textContent: treeRects['x'], value: treeRects['x'] },
-                { childNodes: [], localName: 'y', name: 'y', nodeName: 'y', nodeValue: treeRects['y'], textContent: treeRects['y'], value: treeRects['y'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeRects['fill'], textContent: treeRects['fill'], value: treeRects['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeRects['stroke'], textContent: treeRects['stroke'], value: treeRects['stroke'] },
-                { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeRects['stroke-miterlimit'], textContent: treeRects['stroke-miterlimit'], value: treeRects['stroke-miterlimit'] },
-                { childNodes: [], localName: 'width', name: 'width', nodeName: 'width', nodeValue: treeRects['width'], textContent: treeRects['width'], value: treeRects['width'] },
-                { childNodes: [], localName: 'height', name: 'height', nodeName: 'height', nodeValue: treeRects['height'], textContent: treeRects['height'], value: treeRects['height'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeRects['stroke-width'], textContent: treeRects['stroke-width'], value: treeRects['stroke-width'] }
-            ]
-        });
-    }
-}
+//     //         if (currentNodes[i].length) {
+//     //             for (var j = 0; j < currentNodes[i].length; j++) {
+//     //                 currentNodes.push(currentNodes[i][j]);
+//     //             }
+//     //         }
+//     //         else {
+//     //             rects.push({
+//     //                 childNodes: [],
+//     //                 children: [],
+//     //                 localName: 'rect',
+//     //                 nodeName: 'rect',
+//     //                 nodeValue: null,
+//     //                 tagName: 'rect',
+//     //                 textContent: '',
+//     //                 indexNodeXML: currentNodes[i]['indexNodeXML'],
+//     //                 attributes: [
+//     //                     { childNodes: [], localName: 'x', name: 'x', nodeName: 'x', nodeValue: currentNodes[i]['x'], textContent: currentNodes[i]['x'], value: currentNodes[i]['x'] },
+//     //                     { childNodes: [], localName: 'y', name: 'y', nodeName: 'y', nodeValue: currentNodes[i]['y'], textContent: currentNodes[i]['y'], value: currentNodes[i]['y'] },
+//     //                     { childNodes: [], localName: 'width', name: 'width', nodeName: 'width', nodeValue: currentNodes[i]['width'], textContent: currentNodes[i]['width'], value: currentNodes[i]['width'] },
+//     //                     { childNodes: [], localName: 'height', name: 'height', nodeName: 'height', nodeValue: currentNodes[i]['height'], textContent: currentNodes[i]['height'], value: currentNodes[i]['height'] },
+//     //                     { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//     //                     { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//     //                     { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
+//     //                     { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//     //                 ]
+//     //             });
+//     //         }
+//     //     }
+//     // }
+//     // else {
+//     //     rects.push({
+//     //         childNodes: [],
+//     //         children: [],
+//     //         localName: 'rect',
+//     //         nodeName: 'rect',
+//     //         nodeValue: null,
+//     //         tagName: 'rect',
+//     //         textContent: '',
+//     //         indexNodeXML: treeRects['indexNodeXML'],
+//     //         attributes: [
+//     //             { childNodes: [], localName: 'x', name: 'x', nodeName: 'x', nodeValue: treeRects['x'], textContent: treeRects['x'], value: treeRects['x'] },
+//     //             { childNodes: [], localName: 'y', name: 'y', nodeName: 'y', nodeValue: treeRects['y'], textContent: treeRects['y'], value: treeRects['y'] },
+//     //             { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeRects['fill'], textContent: treeRects['fill'], value: treeRects['fill'] },
+//     //             { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeRects['stroke'], textContent: treeRects['stroke'], value: treeRects['stroke'] },
+//     //             { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeRects['stroke-miterlimit'], textContent: treeRects['stroke-miterlimit'], value: treeRects['stroke-miterlimit'] },
+//     //             { childNodes: [], localName: 'width', name: 'width', nodeName: 'width', nodeValue: treeRects['width'], textContent: treeRects['width'], value: treeRects['width'] },
+//     //             { childNodes: [], localName: 'height', name: 'height', nodeName: 'height', nodeValue: treeRects['height'], textContent: treeRects['height'], value: treeRects['height'] },
+//     //             { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeRects['stroke-width'], textContent: treeRects['stroke-width'], value: treeRects['stroke-width'] }
+//     //         ]
+//     //     });
+//     // }
+// }
 
-export function getPolygons(treePolygons, polygons) {
-    var currentNodes = [];
-    if (treePolygons.length) {
-        for (var i = 0; i < treePolygons.length; i++) {
-            currentNodes.push(treePolygons[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
+// export function getPolygons(treePolygons, polygons) {
+//     var currentNodes = [];
+//     if (treePolygons.length) {
+//         for (var i = 0; i < treePolygons.length; i++) {
+//             currentNodes.push(treePolygons[i]);
+//         }
+//         var len = currentNodes.length;
+//         for (var i = 0; i < currentNodes.length; i++) {
 
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                polygons.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'polygon',
-                    nodeName: 'polygon',
-                    nodeValue: null,
-                    tagName: 'polygon',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: currentNodes[i]['points'], textContent: currentNodes[i]['points'], value: currentNodes[i]['points'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
-        polygons.push({
-            childNodes: [],
-            children: [],
-            localName: 'polygon',
-            nodeName: 'polygon',
-            nodeValue: null,
-            tagName: 'polygon',
-            textContent: '',
-            indexNodeXML: treePolygons['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: treePolygons['points'], textContent: treePolygons['points'], value: treePolygons['points'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treePolygons['fill'], textContent: treePolygons['fill'], value: treePolygons['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treePolygons['stroke'], textContent: treePolygons['stroke'], value: treePolygons['stroke'] },
-                { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treePolygons['stroke-miterlimit'], textContent: treePolygons['stroke-miterlimit'], value: treePolygons['stroke-miterlimit'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treePolygons['stroke-width'], textContent: treePolygons['stroke-width'], value: treePolygons['stroke-width'] }
-            ]
-        });
-    }
-}
+//             if (currentNodes[i].length) {
+//                 for (var j = 0; j < currentNodes[i].length; j++) {
+//                     currentNodes.push(currentNodes[i][j]);
+//                 }
+//             }
+//             else {
+//                 polygons.push({
+//                     childNodes: [],
+//                     children: [],
+//                     localName: 'polygon',
+//                     nodeName: 'polygon',
+//                     nodeValue: null,
+//                     tagName: 'polygon',
+//                     textContent: '',
+//                     indexNodeXML: currentNodes[i]['indexNodeXML'],
+//                     attributes: [
+//                         { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: currentNodes[i]['points'], textContent: currentNodes[i]['points'], value: currentNodes[i]['points'] },
+//                         { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//                         { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//                         { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
+//                         { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//                     ]
+//                 });
+//             }
+//         }
+//     }
+//     else {
+//         polygons.push({
+//             childNodes: [],
+//             children: [],
+//             localName: 'polygon',
+//             nodeName: 'polygon',
+//             nodeValue: null,
+//             tagName: 'polygon',
+//             textContent: '',
+//             indexNodeXML: treePolygons['indexNodeXML'],
+//             attributes: [
+//                 { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: treePolygons['points'], textContent: treePolygons['points'], value: treePolygons['points'] },
+//                 { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treePolygons['fill'], textContent: treePolygons['fill'], value: treePolygons['fill'] },
+//                 { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treePolygons['stroke'], textContent: treePolygons['stroke'], value: treePolygons['stroke'] },
+//                 { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treePolygons['stroke-miterlimit'], textContent: treePolygons['stroke-miterlimit'], value: treePolygons['stroke-miterlimit'] },
+//                 { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treePolygons['stroke-width'], textContent: treePolygons['stroke-width'], value: treePolygons['stroke-width'] }
+//             ]
+//         });
+//     }
+// }
 
-export function getEllipses(treeEllipses, ellipses) {
-    var currentNodes = [];
-    if (treeEllipses.length) {
-        for (var i = 0; i < treeEllipses.length; i++) {
-            currentNodes.push(treeEllipses[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
+// export function getEllipses(treeEllipses, ellipses) {
+//     var currentNodes = [];
+//     if (treeEllipses.length) {
+//         for (var i = 0; i < treeEllipses.length; i++) {
+//             currentNodes.push(treeEllipses[i]);
+//         }
+//         var len = currentNodes.length;
+//         for (var i = 0; i < currentNodes.length; i++) {
 
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                ellipses.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'ellipse',
-                    nodeName: 'ellipse',
-                    nodeValue: null,
-                    tagName: 'ellipse',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'rx', name: 'rx', nodeName: 'rx', nodeValue: currentNodes[i]['rx'], textContent: currentNodes[i]['rx'], value: currentNodes[i]['rx'] },
-                        { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: currentNodes[i]['cx'], textContent: currentNodes[i]['cx'], value: currentNodes[i]['cx'] },
-                        { childNodes: [], localName: 'ry', name: 'ry', nodeName: 'ry', nodeValue: currentNodes[i]['ry'], textContent: currentNodes[i]['ry'], value: currentNodes[i]['ry'] },
-                        { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: currentNodes[i]['cy'], textContent: currentNodes[i]['cy'], value: currentNodes[i]['cy'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
-        ellipses.push({
-            childNodes: [],
-            children: [],
-            localName: 'ellipse',
-            nodeName: 'ellipse',
-            nodeValue: null,
-            tagName: 'ellipse',
-            textContent: '',
-            indexNodeXML: treeEllipses['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'rx', name: 'rx', nodeName: 'rx', nodeValue: treeEllipses['rx'], textContent: treeEllipses['rx'], value: treeEllipses['rx'] },
-                { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: treeEllipses['cx'], textContent: treeEllipses['cx'], value: treeEllipses['cx'] },
-                { childNodes: [], localName: 'ry', name: 'ry', nodeName: 'ry', nodeValue: treeEllipses['ry'], textContent: treeEllipses['ry'], value: treeEllipses['ry'] },
-                { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: treeEllipses['cy'], textContent: treeEllipses['cy'], value: treeEllipses['cy'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeEllipses['fill'], textContent: treeEllipses['fill'], value: treeEllipses['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeEllipses['stroke'], textContent: treeEllipses['stroke'], value: treeEllipses['stroke'] },
-                { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeEllipses['stroke-miterlimit'], textContent: treeEllipses['stroke-miterlimit'], value: treeEllipses['stroke-miterlimit'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeEllipses['stroke-width'], textContent: treeEllipses['stroke-width'], value: treeEllipses['stroke-width'] }
-            ]
-        });
-    }
-}
+//             if (currentNodes[i].length) {
+//                 for (var j = 0; j < currentNodes[i].length; j++) {
+//                     currentNodes.push(currentNodes[i][j]);
+//                 }
+//             }
+//             else {
+//                 ellipses.push({
+//                     childNodes: [],
+//                     children: [],
+//                     localName: 'ellipse',
+//                     nodeName: 'ellipse',
+//                     nodeValue: null,
+//                     tagName: 'ellipse',
+//                     textContent: '',
+//                     indexNodeXML: currentNodes[i]['indexNodeXML'],
+//                     attributes: [
+//                         { childNodes: [], localName: 'rx', name: 'rx', nodeName: 'rx', nodeValue: currentNodes[i]['rx'], textContent: currentNodes[i]['rx'], value: currentNodes[i]['rx'] },
+//                         { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: currentNodes[i]['cx'], textContent: currentNodes[i]['cx'], value: currentNodes[i]['cx'] },
+//                         { childNodes: [], localName: 'ry', name: 'ry', nodeName: 'ry', nodeValue: currentNodes[i]['ry'], textContent: currentNodes[i]['ry'], value: currentNodes[i]['ry'] },
+//                         { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: currentNodes[i]['cy'], textContent: currentNodes[i]['cy'], value: currentNodes[i]['cy'] },
+//                         { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//                         { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//                         { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
+//                         { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//                     ]
+//                 });
+//             }
+//         }
+//     }
+//     else {
+//         ellipses.push({
+//             childNodes: [],
+//             children: [],
+//             localName: 'ellipse',
+//             nodeName: 'ellipse',
+//             nodeValue: null,
+//             tagName: 'ellipse',
+//             textContent: '',
+//             indexNodeXML: treeEllipses['indexNodeXML'],
+//             attributes: [
+//                 { childNodes: [], localName: 'rx', name: 'rx', nodeName: 'rx', nodeValue: treeEllipses['rx'], textContent: treeEllipses['rx'], value: treeEllipses['rx'] },
+//                 { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: treeEllipses['cx'], textContent: treeEllipses['cx'], value: treeEllipses['cx'] },
+//                 { childNodes: [], localName: 'ry', name: 'ry', nodeName: 'ry', nodeValue: treeEllipses['ry'], textContent: treeEllipses['ry'], value: treeEllipses['ry'] },
+//                 { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: treeEllipses['cy'], textContent: treeEllipses['cy'], value: treeEllipses['cy'] },
+//                 { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeEllipses['fill'], textContent: treeEllipses['fill'], value: treeEllipses['fill'] },
+//                 { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeEllipses['stroke'], textContent: treeEllipses['stroke'], value: treeEllipses['stroke'] },
+//                 { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeEllipses['stroke-miterlimit'], textContent: treeEllipses['stroke-miterlimit'], value: treeEllipses['stroke-miterlimit'] },
+//                 { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeEllipses['stroke-width'], textContent: treeEllipses['stroke-width'], value: treeEllipses['stroke-width'] }
+//             ]
+//         });
+//     }
+// }
 
-export function getCircles(treeCircles, circles) {
-    var currentNodes = [];
-    if (treeCircles.length) {
-        for (var i = 0; i < treeCircles.length; i++) {
-            currentNodes.push(treeCircles[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
+// export function getCircles(treeCircles, circles) {
+//     var currentNodes = [];
+//     if (treeCircles.length) {
+//         for (var i = 0; i < treeCircles.length; i++) {
+//             currentNodes.push(treeCircles[i]);
+//         }
+//         var len = currentNodes.length;
+//         for (var i = 0; i < currentNodes.length; i++) {
 
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                circles.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'circle',
-                    nodeName: 'circle',
-                    nodeValue: null,
-                    tagName: 'circle',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: currentNodes[i]['cy'], textContent: currentNodes[i]['cy'], value: currentNodes[i]['cy'] },
-                        { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: currentNodes[i]['cx'], textContent: currentNodes[i]['cx'], value: currentNodes[i]['cx'] },
-                        { childNodes: [], localName: 'r', name: 'r', nodeName: 'r', nodeValue: currentNodes[i]['r'], textContent: currentNodes[i]['r'], value: currentNodes[i]['r'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
-        circles.push({
-            childNodes: [],
-            children: [],
-            localName: 'circle',
-            nodeName: 'circle',
-            nodeValue: null,
-            tagName: 'circle',
-            textContent: '',
-            indexNodeXML: treeCircles['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: treeCircles['cy'], textContent: treeCircles['cy'], value: treeCircles['cy'] },
-                { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: treeCircles['cx'], textContent: treeCircles['cx'], value: treeCircles['cx'] },
-                { childNodes: [], localName: 'r', name: 'r', nodeName: 'r', nodeValue: treeCircles['r'], textContent: treeCircles['r'], value: treeCircles['r'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeCircles['fill'], textContent: treeCircles['fill'], value: treeCircles['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeCircles['stroke'], textContent: treeCircles['stroke'], value: treeCircles['stroke'] },
-                { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeCircles['stroke-miterlimit'], textContent: treeCircles['stroke-miterlimit'], value: treeCircles['stroke-miterlimit'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeCircles['stroke-width'], textContent: treeCircles['stroke-width'], value: treeCircles['stroke-width'] }
-            ]
-        });
-    }
-}
+//             if (currentNodes[i].length) {
+//                 for (var j = 0; j < currentNodes[i].length; j++) {
+//                     currentNodes.push(currentNodes[i][j]);
+//                 }
+//             }
+//             else {
+//                 circles.push({
+//                     childNodes: [],
+//                     children: [],
+//                     localName: 'circle',
+//                     nodeName: 'circle',
+//                     nodeValue: null,
+//                     tagName: 'circle',
+//                     textContent: '',
+//                     indexNodeXML: currentNodes[i]['indexNodeXML'],
+//                     attributes: [
+//                         { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: currentNodes[i]['cy'], textContent: currentNodes[i]['cy'], value: currentNodes[i]['cy'] },
+//                         { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: currentNodes[i]['cx'], textContent: currentNodes[i]['cx'], value: currentNodes[i]['cx'] },
+//                         { childNodes: [], localName: 'r', name: 'r', nodeName: 'r', nodeValue: currentNodes[i]['r'], textContent: currentNodes[i]['r'], value: currentNodes[i]['r'] },
+//                         { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//                         { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//                         { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
+//                         { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//                     ]
+//                 });
+//             }
+//         }
+//     }
+//     else {
+//         circles.push({
+//             childNodes: [],
+//             children: [],
+//             localName: 'circle',
+//             nodeName: 'circle',
+//             nodeValue: null,
+//             tagName: 'circle',
+//             textContent: '',
+//             indexNodeXML: treeCircles['indexNodeXML'],
+//             attributes: [
+//                 { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: treeCircles['cy'], textContent: treeCircles['cy'], value: treeCircles['cy'] },
+//                 { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: treeCircles['cx'], textContent: treeCircles['cx'], value: treeCircles['cx'] },
+//                 { childNodes: [], localName: 'r', name: 'r', nodeName: 'r', nodeValue: treeCircles['r'], textContent: treeCircles['r'], value: treeCircles['r'] },
+//                 { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeCircles['fill'], textContent: treeCircles['fill'], value: treeCircles['fill'] },
+//                 { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeCircles['stroke'], textContent: treeCircles['stroke'], value: treeCircles['stroke'] },
+//                 { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeCircles['stroke-miterlimit'], textContent: treeCircles['stroke-miterlimit'], value: treeCircles['stroke-miterlimit'] },
+//                 { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeCircles['stroke-width'], textContent: treeCircles['stroke-width'], value: treeCircles['stroke-width'] }
+//             ]
+//         });
+//     }
+// }
 
-export function getPolylines(treePolylines, polylines) {
-    var currentNodes = [];
-    if (treePolylines.length) {
-        for (var i = 0; i < treePolylines.length; i++) {
-            currentNodes.push(treePolylines[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
+// export function getPolylines(treePolylines, polylines) {
+//     var currentNodes = [];
+//     if (treePolylines.length) {
+//         for (var i = 0; i < treePolylines.length; i++) {
+//             currentNodes.push(treePolylines[i]);
+//         }
+//         var len = currentNodes.length;
+//         for (var i = 0; i < currentNodes.length; i++) {
 
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                polylines.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'polyline',
-                    nodeName: 'polyline',
-                    nodeValue: null,
-                    tagName: 'polyline',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: currentNodes[i]['points'], textContent: currentNodes[i]['points'], value: currentNodes[i]['points'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-linecap', name: 'stroke-linecap', nodeName: 'stroke-linecap', nodeValue: currentNodes[i]['stroke-linecap'], textContent: currentNodes[i]['stroke-linecap'], value: currentNodes[i]['stroke-linecap'] },
-                        { childNodes: [], localName: 'stroke-linejoin', name: 'stroke-linejoin', nodeName: 'stroke-linejoin', nodeValue: currentNodes[i]['stroke-linejoin'], textContent: currentNodes[i]['stroke-linejoin'], value: currentNodes[i]['stroke-linejoin'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
+//             if (currentNodes[i].length) {
+//                 for (var j = 0; j < currentNodes[i].length; j++) {
+//                     currentNodes.push(currentNodes[i][j]);
+//                 }
+//             }
+//             else {
+//                 polylines.push({
+//                     childNodes: [],
+//                     children: [],
+//                     localName: 'polyline',
+//                     nodeName: 'polyline',
+//                     nodeValue: null,
+//                     tagName: 'polyline',
+//                     textContent: '',
+//                     indexNodeXML: currentNodes[i]['indexNodeXML'],
+//                     attributes: [
+//                         { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: currentNodes[i]['points'], textContent: currentNodes[i]['points'], value: currentNodes[i]['points'] },
+//                         { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//                         { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//                         { childNodes: [], localName: 'stroke-linecap', name: 'stroke-linecap', nodeName: 'stroke-linecap', nodeValue: currentNodes[i]['stroke-linecap'], textContent: currentNodes[i]['stroke-linecap'], value: currentNodes[i]['stroke-linecap'] },
+//                         { childNodes: [], localName: 'stroke-linejoin', name: 'stroke-linejoin', nodeName: 'stroke-linejoin', nodeValue: currentNodes[i]['stroke-linejoin'], textContent: currentNodes[i]['stroke-linejoin'], value: currentNodes[i]['stroke-linejoin'] },
+//                         { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//                     ]
+//                 });
+//             }
+//         }
+//     }
+//     else {
 
-        polylines.push({
-            childNodes: [],
-            children: [],
-            localName: 'polyline',
-            nodeName: 'polyline',
-            nodeValue: null,
-            tagName: 'polyline',
-            textContent: '',
-            indexNodeXML: treePolylines['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: treePolylines['points'], textContent: treePolylines['points'], value: treePolylines['points'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treePolylines['fill'], textContent: treePolylines['fill'], value: treePolylines['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treePolylines['stroke'], textContent: treePolylines['stroke'], value: treePolylines['stroke'] },
-                { childNodes: [], localName: 'stroke-linecap', name: 'stroke-linecap', nodeName: 'stroke-linecap', nodeValue: treePolylines['stroke-linecap'], textContent: treePolylines['stroke-linecap'], value: treePolylines['stroke-linecap'] },
-                { childNodes: [], localName: 'stroke-linejoin', name: 'stroke-linejoin', nodeName: 'stroke-linejoin', nodeValue: treePolylines['stroke-linejoin'], textContent: treePolylines['stroke-linejoin'], value: treePolylines['stroke-linejoin'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treePolylines['stroke-width'], textContent: treePolylines['stroke-width'], value: treePolylines['stroke-width'] }
-            ]
-        });
-    }
-}
+//         polylines.push({
+//             childNodes: [],
+//             children: [],
+//             localName: 'polyline',
+//             nodeName: 'polyline',
+//             nodeValue: null,
+//             tagName: 'polyline',
+//             textContent: '',
+//             indexNodeXML: treePolylines['indexNodeXML'],
+//             attributes: [
+//                 { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: treePolylines['points'], textContent: treePolylines['points'], value: treePolylines['points'] },
+//                 { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treePolylines['fill'], textContent: treePolylines['fill'], value: treePolylines['fill'] },
+//                 { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treePolylines['stroke'], textContent: treePolylines['stroke'], value: treePolylines['stroke'] },
+//                 { childNodes: [], localName: 'stroke-linecap', name: 'stroke-linecap', nodeName: 'stroke-linecap', nodeValue: treePolylines['stroke-linecap'], textContent: treePolylines['stroke-linecap'], value: treePolylines['stroke-linecap'] },
+//                 { childNodes: [], localName: 'stroke-linejoin', name: 'stroke-linejoin', nodeName: 'stroke-linejoin', nodeValue: treePolylines['stroke-linejoin'], textContent: treePolylines['stroke-linejoin'], value: treePolylines['stroke-linejoin'] },
+//                 { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treePolylines['stroke-width'], textContent: treePolylines['stroke-width'], value: treePolylines['stroke-width'] }
+//             ]
+//         });
+//     }
+// }
 
-export function getPaths(treePaths, paths) {
-    // console.log('treePaths', treePaths)
+// export function getPaths(treePaths, paths) {
+//     // console.log('treePaths', treePaths)
     
-    var currentNodes = [];
-    if (treePaths.length) {
-        for (var i = 0; i < treePaths.length; i++) {
-            currentNodes.push(treePaths[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                paths.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'path',
-                    nodeName: 'path',
-                    nodeValue: null,
-                    tagName: 'path',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'd', name: 'd', nodeName: 'd', nodeValue: currentNodes[i]['d'], textContent: currentNodes[i]['d'], value: currentNodes[i]['d'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
-        // console.log('gaa')
-        paths.push({
-            childNodes: [],
-            children: [],
-            localName: 'path',
-            nodeName: 'path',
-            nodeValue: null,
-            tagName: 'path',
-            textContent: '',
-            indexNodeXML: treePaths['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'd', name: 'd', nodeName: 'd', nodeValue: treePaths['d'], textContent: treePaths['d'], value: treePaths['d'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treePaths['fill'], textContent: treePaths['fill'], value: treePaths['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treePaths['stroke'], textContent: treePaths['stroke'], value: treePaths['stroke'] },
-                { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treePaths['stroke-miterlimit'], textContent: treePaths['stroke-miterlimit'], value: treePaths['stroke-miterlimit'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treePaths['stroke-width'], textContent: treePaths['stroke-width'], value: treePaths['stroke-width'] }
-            ]
-        });
-    }
-}
+//     var currentNodes = [];
+//     if (treePaths.length) {
+//         for (var i = 0; i < treePaths.length; i++) {
+//             currentNodes.push(treePaths[i]);
+//         }
+//         var len = currentNodes.length;
+//         for (var i = 0; i < currentNodes.length; i++) {
+//             if (currentNodes[i].length) {
+//                 for (var j = 0; j < currentNodes[i].length; j++) {
+//                     currentNodes.push(currentNodes[i][j]);
+//                 }
+//             }
+//             else {
+//                 paths.push({
+//                     childNodes: [],
+//                     children: [],
+//                     localName: 'path',
+//                     nodeName: 'path',
+//                     nodeValue: null,
+//                     tagName: 'path',
+//                     textContent: '',
+//                     indexNodeXML: currentNodes[i]['indexNodeXML'],
+//                     attributes: [
+//                         { childNodes: [], localName: 'd', name: 'd', nodeName: 'd', nodeValue: currentNodes[i]['d'], textContent: currentNodes[i]['d'], value: currentNodes[i]['d'] },
+//                         { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//                         { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//                         { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
+//                         { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//                     ]
+//                 });
+//             }
+//         }
+//     }
+//     else {
+//         // console.log('gaa')
+//         paths.push({
+//             childNodes: [],
+//             children: [],
+//             localName: 'path',
+//             nodeName: 'path',
+//             nodeValue: null,
+//             tagName: 'path',
+//             textContent: '',
+//             indexNodeXML: treePaths['indexNodeXML'],
+//             attributes: [
+//                 { childNodes: [], localName: 'd', name: 'd', nodeName: 'd', nodeValue: treePaths['d'], textContent: treePaths['d'], value: treePaths['d'] },
+//                 { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treePaths['fill'], textContent: treePaths['fill'], value: treePaths['fill'] },
+//                 { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treePaths['stroke'], textContent: treePaths['stroke'], value: treePaths['stroke'] },
+//                 { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treePaths['stroke-miterlimit'], textContent: treePaths['stroke-miterlimit'], value: treePaths['stroke-miterlimit'] },
+//                 { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treePaths['stroke-width'], textContent: treePaths['stroke-width'], value: treePaths['stroke-width'] }
+//             ]
+//         });
+//     }
+// }
 
-export function getLines(treeLines, lines) {
-    var currentNodes = [];
-    if (treeLines.length) {
-        for (var i = 0; i < treeLines.length; i++) {
-            currentNodes.push(treeLines[i]);
-        }
-        var len = currentNodes.length;
-        for (var i = 0; i < currentNodes.length; i++) {
+// export function getLines(treeLines, lines) {
+//     var currentNodes = [];
+//     if (treeLines.length) {
+//         for (var i = 0; i < treeLines.length; i++) {
+//             currentNodes.push(treeLines[i]);
+//         }
+//         var len = currentNodes.length;
+//         for (var i = 0; i < currentNodes.length; i++) {
 
-            if (currentNodes[i].length) {
-                for (var j = 0; j < currentNodes[i].length; j++) {
-                    currentNodes.push(currentNodes[i][j]);
-                }
-            }
-            else {
-                lines.push({
-                    childNodes: [],
-                    children: [],
-                    localName: 'line',
-                    nodeName: 'line',
-                    nodeValue: null,
-                    tagName: 'line',
-                    textContent: '',
-                    indexNodeXML: currentNodes[i]['indexNodeXML'],
-                    attributes: [
-                        { childNodes: [], localName: 'x1', name: 'x1', nodeName: 'x1', nodeValue: currentNodes[i]['x1'], textContent: currentNodes[i]['x1'], value: currentNodes[i]['x1'] },
-                        { childNodes: [], localName: 'x2', name: 'x2', nodeName: 'x2', nodeValue: currentNodes[i]['x2'], textContent: currentNodes[i]['x2'], value: currentNodes[i]['x2'] },
-                        { childNodes: [], localName: 'y1', name: 'y1', nodeName: 'y1', nodeValue: currentNodes[i]['y1'], textContent: currentNodes[i]['y1'], value: currentNodes[i]['y1'] },
-                        { childNodes: [], localName: 'y2', name: 'y2', nodeName: 'y2', nodeValue: currentNodes[i]['y2'], textContent: currentNodes[i]['y2'], value: currentNodes[i]['y2'] },
-                        { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
-                        { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
-                        { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
-                        { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
-                    ]
-                });
-            }
-        }
-    }
-    else {
-        lines.push({
-            childNodes: [],
-            children: [],
-            localName: 'line',
-            nodeName: 'line',
-            nodeValue: null,
-            tagName: 'line',
-            textContent: '',
-            indexNodeXML: treeLines['indexNodeXML'],
-            attributes: [
-                { childNodes: [], localName: 'x1', name: 'x1', nodeName: 'x1', nodeValue: treeLines['x1'], textContent: treeLines['x1'], value: treeLines['x1'] },
-                { childNodes: [], localName: 'x2', name: 'x2', nodeName: 'x2', nodeValue: treeLines['x2'], textContent: treeLines['x2'], value: treeLines['x2'] },
-                { childNodes: [], localName: 'y1', name: 'y1', nodeName: 'y1', nodeValue: treeLines['y1'], textContent: treeLines['y1'], value: treeLines['y1'] },
-                { childNodes: [], localName: 'y2', name: 'y2', nodeName: 'y2', nodeValue: treeLines['y2'], textContent: treeLines['y2'], value: treeLines['y2'] },
-                { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeLines['fill'], textContent: treeLines['fill'], value: treeLines['fill'] },
-                { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeLines['stroke'], textContent: treeLines['stroke'], value: treeLines['stroke'] },
-                { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeLines['stroke-miterlimit'], textContent: treeLines['stroke-miterlimit'], value: treeLines['stroke-miterlimit'] },
-                { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeLines['stroke-width'], textContent: treeLines['stroke-width'], value: treeLines['stroke-width'] }
-            ]
-        });
-    }
-}
+//             if (currentNodes[i].length) {
+//                 for (var j = 0; j < currentNodes[i].length; j++) {
+//                     currentNodes.push(currentNodes[i][j]);
+//                 }
+//             }
+//             else {
+//                 lines.push({
+//                     childNodes: [],
+//                     children: [],
+//                     localName: 'line',
+//                     nodeName: 'line',
+//                     nodeValue: null,
+//                     tagName: 'line',
+//                     textContent: '',
+//                     indexNodeXML: currentNodes[i]['indexNodeXML'],
+//                     attributes: [
+//                         { childNodes: [], localName: 'x1', name: 'x1', nodeName: 'x1', nodeValue: currentNodes[i]['x1'], textContent: currentNodes[i]['x1'], value: currentNodes[i]['x1'] },
+//                         { childNodes: [], localName: 'x2', name: 'x2', nodeName: 'x2', nodeValue: currentNodes[i]['x2'], textContent: currentNodes[i]['x2'], value: currentNodes[i]['x2'] },
+//                         { childNodes: [], localName: 'y1', name: 'y1', nodeName: 'y1', nodeValue: currentNodes[i]['y1'], textContent: currentNodes[i]['y1'], value: currentNodes[i]['y1'] },
+//                         { childNodes: [], localName: 'y2', name: 'y2', nodeName: 'y2', nodeValue: currentNodes[i]['y2'], textContent: currentNodes[i]['y2'], value: currentNodes[i]['y2'] },
+//                         { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: currentNodes[i]['fill'], textContent: currentNodes[i]['fill'], value: currentNodes[i]['fill'] },
+//                         { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: currentNodes[i]['stroke'], textContent: currentNodes[i]['stroke'], value: currentNodes[i]['stroke'] },
+//                         { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: currentNodes[i]['stroke-miterlimit'], textContent: currentNodes[i]['stroke-miterlimit'], value: currentNodes[i]['stroke-miterlimit'] },
+//                         { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: currentNodes[i]['stroke-width'], textContent: currentNodes[i]['stroke-width'], value: currentNodes[i]['stroke-width'] }
+//                     ]
+//                 });
+//             }
+//         }
+//     }
+//     else {
+//         lines.push({
+//             childNodes: [],
+//             children: [],
+//             localName: 'line',
+//             nodeName: 'line',
+//             nodeValue: null,
+//             tagName: 'line',
+//             textContent: '',
+//             indexNodeXML: treeLines['indexNodeXML'],
+//             attributes: [
+//                 { childNodes: [], localName: 'x1', name: 'x1', nodeName: 'x1', nodeValue: treeLines['x1'], textContent: treeLines['x1'], value: treeLines['x1'] },
+//                 { childNodes: [], localName: 'x2', name: 'x2', nodeName: 'x2', nodeValue: treeLines['x2'], textContent: treeLines['x2'], value: treeLines['x2'] },
+//                 { childNodes: [], localName: 'y1', name: 'y1', nodeName: 'y1', nodeValue: treeLines['y1'], textContent: treeLines['y1'], value: treeLines['y1'] },
+//                 { childNodes: [], localName: 'y2', name: 'y2', nodeName: 'y2', nodeValue: treeLines['y2'], textContent: treeLines['y2'], value: treeLines['y2'] },
+//                 { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: treeLines['fill'], textContent: treeLines['fill'], value: treeLines['fill'] },
+//                 { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: treeLines['stroke'], textContent: treeLines['stroke'], value: treeLines['stroke'] },
+//                 { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: treeLines['stroke-miterlimit'], textContent: treeLines['stroke-miterlimit'], value: treeLines['stroke-miterlimit'] },
+//                 { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: treeLines['stroke-width'], textContent: treeLines['stroke-width'], value: treeLines['stroke-width'] }
+//             ]
+//         });
+//     }
+// }
 
 export function getSymbol(treeG, gs) {
     var currentNodes = [];
@@ -608,7 +610,7 @@ export function getSymbol(treeG, gs) {
                 if (currentNodes[i].path) {
                     gs.path.push(currentNodes[i].path);
                 }
-                if (currentNodes[i].line) {
+                if (currentNodes[i].line) {currentNodes
                     gs.line.push(currentNodes[i].line);
                 }
             }
@@ -627,7 +629,7 @@ export function getSymbol(treeG, gs) {
         if (treeG.circle) {
             gs.circle.push(treeG.circle);
         }
-        if (treeG.path) {
+        if (treeG.path) {currentNodes
             gs.path.push(treeG.path);
         }
         if (treeG.polylines) {
@@ -638,8 +640,6 @@ export function getSymbol(treeG, gs) {
         }
     }
 }
-
-
 
 
 export function getGs(treeG, gs) {
@@ -714,4 +714,110 @@ export function getGs(treeG, gs) {
             gs.line.push(treeG.line);
         }
     }
+}
+
+export function getSVGShape(shapes, type) {
+    let currentNodes = [];
+    let result = [];
+
+    const processShape = (node, name) => {
+        const commonAttr = [
+            { childNodes: [], localName: 'fill', name: 'fill', nodeName: 'fill', nodeValue: node['fill'], textContent: node['fill'], value: node['fill'] },
+            { childNodes: [], localName: 'stroke', name: 'stroke', nodeName: 'stroke', nodeValue: node['stroke'], textContent: node['stroke'], value: node['stroke'] },
+            { childNodes: [], localName: 'stroke-miterlimit', name: 'stroke-miterlimit', nodeName: 'stroke-miterlimit', nodeValue: node['stroke-miterlimit'], textContent: node['stroke-miterlimit'], value: node['stroke-miterlimit'] },
+            { childNodes: [], localName: 'stroke-width', name: 'stroke-width', nodeName: 'stroke-width', nodeValue: node['stroke-width'], textContent: node['stroke-width'], value: node['stroke-width'] }
+        ]
+
+        let specificAttr = []
+        switch (name) {
+            case 'rect':
+                specificAttr = [
+                    { childNodes: [], localName: 'x', name: 'x', nodeName: 'x', nodeValue: node['x'], textContent: node['x'], value: node['x'] },
+                    { childNodes: [], localName: 'y', name: 'y', nodeName: 'y', nodeValue: node['y'], textContent: node['y'], value: node['y'] },
+                    { childNodes: [], localName: 'width', name: 'width', nodeName: 'width', nodeValue: node['width'], textContent: node['width'], value: node['width'] },
+                    { childNodes: [], localName: 'height', name: 'height', nodeName: 'height', nodeValue: node['height'], textContent: node['height'], value: node['height'] },
+                ];
+                break;
+            case 'polygon':
+                specificAttr = [
+                    { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: treePolygons['points'], textContent: treePolygons['points'], value: treePolygons['points'] },
+                ];
+                break;
+            case 'ellipse':
+                specificAttr = [
+                    { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: node['cx'], textContent: node['cx'], value: node['cx'] },
+                    { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: node['cy'], textContent: node['cy'], value: node['cy'] },
+                    { childNodes: [], localName: 'rx', name: 'rx', nodeName: 'rx', nodeValue: node['rx'], textContent: node['rx'], value: node['rx'] },
+                    { childNodes: [], localName: 'ry', name: 'ry', nodeName: 'ry', nodeValue: node['ry'], textContent: node['ry'], value: node['ry'] },
+                ];
+                break;
+            case 'circle':
+                specificAttr = [
+                    { childNodes: [], localName: 'cx', name: 'cx', nodeName: 'cx', nodeValue: node['cx'], textContent: node['cx'], value: node['cx'] },
+                    { childNodes: [], localName: 'cy', name: 'cy', nodeName: 'cy', nodeValue: node['cy'], textContent: node['cy'], value: node['cy'] },
+                    { childNodes: [], localName: 'r', name: 'r', nodeName: 'r', nodeValue: node['r'], textContent: node['r'], value: node['r'] },
+                ];
+                break;
+            case 'polyline':
+                specificAttr = [
+                    { childNodes: [], localName: 'points', name: 'points', nodeName: 'points', nodeValue: node['points'], textContent: node['points'], value: node['points'] },
+                    { childNodes: [], localName: 'stroke-linecap', name: 'stroke-linecap', nodeName: 'stroke-linecap', nodeValue: node['stroke-linecap'], textContent: node['stroke-linecap'], value: node['stroke-linecap'] },
+                    { childNodes: [], localName: 'stroke-linejoin', name: 'stroke-linejoin', nodeName: 'stroke-linejoin', nodeValue: node['stroke-linejoin'], textContent: node['stroke-linejoin'], value: node['stroke-linejoin'] },
+                ];
+                break;
+            case 'path':
+                specificAttr = [
+                    { childNodes: [], localName: 'd', name: 'd', nodeName: 'd', nodeValue: node['d'], textContent: node['d'], value: node['d'] },
+                ]
+                break;
+            case 'line':
+                specificAttr = [
+                    { childNodes: [], localName: 'x1', name: 'x1', nodeName: 'x1', nodeValue: node['x1'], textContent: node['x1'], value: node['x1'] },
+                    { childNodes: [], localName: 'x2', name: 'x2', nodeName: 'x2', nodeValue: node['x2'], textContent: node['x2'], value: node['x2'] },
+                    { childNodes: [], localName: 'y1', name: 'y1', nodeName: 'y1', nodeValue: node['y1'], textContent: node['y1'], value: node['y1'] },
+                    { childNodes: [], localName: 'y2', name: 'y2', nodeName: 'y2', nodeValue: node['y2'], textContent: node['y2'], value: node['y2'] },
+                ]
+                break;
+            default:
+                break;
+        }
+
+        return {
+            childNodes: [],
+            children: [],
+            localName: name,
+            nodeName: name,
+            nodeValue: null,
+            tagName: name,
+            textContent: '',
+            indexNodeXML: node['indexNodeXML'],
+            attributes: [...specificAttr, ...commonAttr]
+        }
+
+        
+    }
+
+    if (shapes.length) {
+        shapes.forEach(element => {
+            currentNodes.push(element);
+        });
+
+        console.log('CurrentNode', currentNodes)
+        currentNodes.forEach(node => {
+            if (Array.isArray(node)) {
+                node.forEach(nestedNode => {
+                    currentNodes.push(nestedNode);
+                })
+            } else {
+                console.log('Node ::', node, type)
+                result.push(processShape(node, type))
+                // rects.push(processShape(node, 'rect'))
+            }
+        })
+    } else {
+        result.push(processShape(shapes, type))
+        // rects.push(processShape(shapes, 'rect'))
+    }
+
+    return result;
 }

@@ -61,7 +61,7 @@ class Converter {
         // console.log('Op timized SVG: ', optimizedSvg)
 
         return new Promise((resolve, reject) => {
-            let tree = new XMLParser(svgData, {})
+            let tree = new XMLParser(optimizedSvg, {})
 
             const treeView = tree.getTree()
             if (tree.getTree().viewBox){

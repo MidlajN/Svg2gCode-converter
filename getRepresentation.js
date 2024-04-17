@@ -1,12 +1,13 @@
 import {
-    getPolygons,
-    getPolylines,
+    // getPolygons,
+    // getPolylines,
     getGs,
-    getRects,
-    getPaths,
-    getLines,
-    getEllipses,
-    getCircles
+    // getRects,
+    // getPaths,
+    // getLines,
+    // getEllipses,
+    // getCircles
+    getSVGShape
 } from './getElements.js'
 
 
@@ -41,6 +42,7 @@ export function getRepresentation(tree) {
     // };
 
 
+    console.log('TEREEE ', tree)
     var treeRects = tree.rect;
     var treePolygons = tree.polygon;
     var treeEllipses = tree.ellipse;
@@ -65,8 +67,8 @@ export function getRepresentation(tree) {
 
         if (gs.rect.length > 0) {
             for (var j = 0; j < gs.rect.length; j++) {
-                var rectG = [];
-                getRects(gs.rect[j], rectG);
+                // var rectG = [];
+                let rectG = getSVGShape(gs.rect[j], 'rect');
                 for (var i = 0; i < rectG.length; i++) {
                     node.childNodes.push(rectG[i]);
                 }
@@ -74,8 +76,8 @@ export function getRepresentation(tree) {
         }
         if (gs.polygon.length > 0) {
             for (var j = 0; j < gs.polygon.length; j++) {
-                var polygonG = [];
-                getPolygons(gs.polygon[j], polygonG);
+                // var polygonG = [];
+                let polygonG = getSVGShape(gs.polygon[j], 'polygon');
                 for (var i = 0; i < polygonG.length; i++) {
                     node.childNodes.push(polygonG[i]);
                 }
@@ -83,8 +85,8 @@ export function getRepresentation(tree) {
         }
         if (gs.ellipse.length > 0) {
             for (var j = 0; j < gs.ellipse.length; j++) {
-                var ellipseG = [];
-                getEllipses(gs.ellipse[j], ellipseG);
+                // var ellipseG = [];
+                let ellipseG = getSVGShape(gs.ellipse[j], 'ellipse');
                 for (var i = 0; i < ellipseG.length; i++) {
                     node.childNodes.push(ellipseG[i]);
                 }
@@ -92,8 +94,8 @@ export function getRepresentation(tree) {
         }
         if (gs.circle.length > 0) {
             for (var j = 0; j < gs.circle.length; j++) {
-                var circleG = [];
-                getCircles(gs.circle[j], circleG);
+                // var circleG = [];
+                let circleG = getSVGShape(gs.circle[j], 'circle');
                 for (var i = 0; i < circleG.length; i++) {
                     node.childNodes.push(circleG[i]);
                 }
@@ -101,8 +103,8 @@ export function getRepresentation(tree) {
         }
         if (gs.path.length > 0) {
             for (var j = 0; j < gs.path.length; j++) {
-                var pathG = [];
-                getPaths(gs.path[j], pathG);
+                // var pathG = [];
+                let pathG = getSVGShape(gs.path[j], 'path');
                 for (var i = 0; i < pathG.length; i++) {
                     node.childNodes.push(pathG[i]);
                 }
@@ -110,8 +112,8 @@ export function getRepresentation(tree) {
         }
         if (gs.polylines.length > 0) {
             for (var j = 0; j < gs.polylines.length; j++) {
-                var polylineG = [];
-                getPolylines(gs.polylines[j], polylineG);
+                // var polylineG = [];
+                let polylineG = getSVGShape(gs.polylines[j], 'polyline');
                 for (var i = 0; i < polylineG.length; i++) {
                     node.childNodes.push(polylineG[i]);
                 }
@@ -119,8 +121,8 @@ export function getRepresentation(tree) {
         }
         if (gs.line.length > 0) {
             for (var j = 0; j < gs.line.length; j++) {
-                var lineG = [];
-                getLines(gs.line[j], lineG);
+                // var lineG = [];
+                let lineG = getSVGShape(gs.line[j], 'line');
                 for (var i = 0; i < lineG.length; i++) {
                     node.childNodes.push(lineG[i]);
                 }
@@ -128,57 +130,57 @@ export function getRepresentation(tree) {
         }
     }
 
-    var polylines = [];
+    // var polylines = [];
     if (treePolylines) {
-        getPolylines(treePolylines, polylines);
+        let polylines = getSVGShape(treePolylines, 'polyline');
         for (var i = 0; i < polylines.length; i++) {
             node.childNodes.push(polylines[i]);
         }
     }
 
-    var polygons = [];
+    // var polygons = [];
     if (treePolygons) {
-        getPolygons(treePolygons, polygons);
+        let polygons = getSVGShape(treePolygons, 'polygon');
         for (var i = 0; i < polygons.length; i++) {
             node.childNodes.push(polygons[i]);
         }
     }
 
-    var ellipses = [];
+    // var ellipses = [];
     if (treeEllipses) {
-        getEllipses(treeEllipses, ellipses);
+        let ellipses = getSVGShape(treeEllipses, 'ellipse');
         for (var i = 0; i < ellipses.length; i++) {
             node.childNodes.push(ellipses[i]);
         }
     }
 
-    var circles = [];
+    // var circles = [];
     if (treeCircles) {
-        getCircles(treeCircles, circles);
+        let circles = getSVGShape(treeCircles, 'circle');
         for (var i = 0; i < circles.length; i++) {
             node.childNodes.push(circles[i]);
         }
     }
 
-    var paths = [];
+    // var paths = [];
     if (treePaths) {
-        getPaths(treePaths, paths);
+        let paths = getSVGShape(treePaths, 'path');
         for (var i = 0; i < paths.length; i++) {
             node.childNodes.push(paths[i]);
         }
     }
 
-    var lines = [];
+    // var lines = [];
     if (treeLines) {
-        getLines(treeLines, lines);
+        let lines = getSVGShape(treeLines, 'line');
         for (var i = 0; i < lines.length; i++) {
             node.childNodes.push(lines[i]);
         }
     }
 
-    var rects = [];
+    // var rects = [];
     if (treeRects) {
-        getRects(treeRects, rects);
+        let rects = getSVGShape(treeRects, 'rect');
         for (var i = 0; i < rects.length; i++) {
             node.childNodes.push(rects[i]);
         }
