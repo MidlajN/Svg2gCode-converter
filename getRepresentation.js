@@ -42,7 +42,7 @@ export function getRepresentation(tree) {
     // };
 
 
-    console.log('TEREEE ', tree)
+    // console.log('TEREEE ', tree)
     var treeRects = tree.rect;
     var treePolygons = tree.polygon;
     var treeEllipses = tree.ellipse;
@@ -63,6 +63,7 @@ export function getRepresentation(tree) {
     gs.polylines = [];
 
     if (treeG) {
+        // console.log(tree)
         getGs(treeG, gs);
 
         if (gs.rect.length > 0) {

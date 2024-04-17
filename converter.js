@@ -61,7 +61,7 @@ class Converter {
         // console.log('Op timized SVG: ', optimizedSvg)
 
         return new Promise((resolve, reject) => {
-            let tree = new XMLParser(optimizedSvg, {})
+            let tree = new XMLParser(svgData, {})
 
             const treeView = tree.getTree()
             if (tree.getTree().viewBox){
@@ -103,7 +103,7 @@ class Converter {
             } else {
                 // single layer
                 let XMLRepresentation = getRepresentation(treeView)
-                console.log('[+] Getting XML representation ...', XMLRepresentation, 'treeView', treeView)
+                // console.log('[+] Getting XML representation ...', XMLRepresentation, 'treeView', treeView)
                 XMLRepresentation.viewBox = svgViewBox
                 console.log('[+] Converting ...')
                 // console.log('[+] Getting XML representation ...', XMLRepresentation)

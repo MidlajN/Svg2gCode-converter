@@ -34,7 +34,7 @@ export const SVGReader = {
         node.xformToWorld = [1, 0, 0, 1, 0, 0]
         this.parseChildren(svgRootElement, node)
 
-        console.log(svgRootElement, node)
+        // console.log(svgRootElement, node)
         first_run = false
         return this.boundarys
     },
@@ -42,7 +42,7 @@ export const SVGReader = {
 
 
     parseChildren: function (domNode, firstParent) {
-        console.log('parseChildren', domNode, firstParent)
+        // console.log('parseChildren', domNode, firstParent)
         /** The script will crash if it is run several times without closing,
          because domNode gets corrupted. Here, domNode is only read to dNode the first pass
         and dnode will be used for following passes.
