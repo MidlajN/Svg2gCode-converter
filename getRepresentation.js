@@ -1,6 +1,6 @@
 
 export function getRepresentation(tree) {
-    console.log('tree', tree)
+    // console.log('tree', tree)
     const svgElements = { rect: [], polygon: [], ellipse: [], circle: [], path: [], line: [], polylines: [] };
     const node = { childNodes: [] };
 
@@ -41,7 +41,7 @@ export function getRepresentation(tree) {
 }
 
 
-export function getGs(treeG, gs) {
+function getGs(treeG, gs) {
     if (!treeG) return;
 
     const processNode = (node, gs) => {
@@ -62,7 +62,7 @@ export function getGs(treeG, gs) {
 }
 
 
-export function getSVGShape(shapes, type) {
+function getSVGShape(shapes, type) {
     let result = [];
 
     const processShape = (node, name) => {
