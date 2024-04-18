@@ -1,10 +1,11 @@
-// import { getGs, getSVGShape } from './getElements.js'
 
 export function getRepresentation(tree) {
+    console.log('tree', tree)
     const svgElements = { rect: [], polygon: [], ellipse: [], circle: [], path: [], line: [], polylines: [] };
     const node = { childNodes: [] };
 
     const processShapes = (shapes, name) => {
+        // console.log(shapes)
         shapes.forEach(shape => {
             const shapeGroup = getSVGShape(shape, name);
             shapeGroup.forEach(g => node.childNodes.push(g));
@@ -35,7 +36,7 @@ export function getRepresentation(tree) {
 
     node.childNodes.sort((node1, node2) => node1.indexNodeXML - node2.indexNodeXML);
 
-    console.log('node ', node)
+    // console.log('node ', node)
     return node;
 }
 
@@ -53,6 +54,7 @@ export function getGs(treeG, gs) {
         }
     }
 
+    // console.log(treeG)
     if (Array.isArray(treeG)) treeG.forEach(element => processNode(element, gs));
     else processNode(treeG, gs);
 
