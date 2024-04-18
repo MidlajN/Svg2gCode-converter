@@ -212,7 +212,7 @@ export function num_keys(hash) {
 
 export function getAttribute(tag, attribute) {
     for (var i = 0; i < tag.attributes.length; i++) {
-        if (tag.attributes[i].nodeName == attribute) {
+        if (tag.attributes[i].name == attribute) {
             return tag.attributes[i].value;
         }
     }
