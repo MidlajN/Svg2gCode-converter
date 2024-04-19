@@ -56,14 +56,16 @@ export const SVGReader = {
                 node.xformToWorld = this.matrixMult(parentNode.xformToWorld, node.xform);
 
                 if (svgMapping.SVGTagMapping[tag.tagName]) {
-                    console.log(tag)
+                    // console.log(tag)
                     svgMapping.SVGTagMapping[tag.tagName](this, tag, node);
                 }
 
                 node.path.forEach(subPath => {
                     subPath.forEach((path, index) => {
-                        let temp = this.matrixApply(node.xformToWorld, path);
-                        subPath[index] = new Vec2(temp[0], temp[1]);
+                        // console.log(path)
+                        // let temp = this.matrixApply(node.xformToWorld, path);
+                        // console.log(temp)
+                        subPath[index] = new Vec2(path[0], path[1]);
                     })
                     this.boundarys.allcolors.push(subPath);
                 })
@@ -82,23 +84,34 @@ export const SVGReader = {
         var tolerance2 = this.tolerance_squared;
         var totalMaxScale = this.matrixGetScale(node.xformToWorld);
 
-        // console.log("totalMaxScale : " + tolerance2);
+        // console.log("totalMaxScale : " + totalMaxScale);
         if (totalMaxScale !== 0) {
             // adjust for possible transforms
+            console.log(`tolerance = ${tolerance2} / ${totalMaxScale}^2 = ${tolerance2 / Math.pow(totalMaxScale, 2)}`);
             tolerance2 /= Math.pow(totalMaxScale, 2);
-            // $().uxmessage('notice', "tolerance2: " + tolerance2.toString());
+            
         }
 
-        if (typeof d == 'string') {
-            // parse path string
+        // if (typeof d == 'string') {
+        //     // parse path string
+        //     d = d.match(/([A-Za-z]|-?[0-9]+\.?[0-9]*(?:e-?[0-9]*)?)/g);
+        //     for (var i = 0; i < d.length; i++) {
+        //         var num = parseFloat(d[i]);
+        //         if (!isNaN(num)) {
+        //             d[i] = num;
+        //         }
+        //     }
+        // }
+        if (typeof d === 'string') {
             d = d.match(/([A-Za-z]|-?[0-9]+\.?[0-9]*(?:e-?[0-9]*)?)/g);
-            for (var i = 0; i < d.length; i++) {
-                var num = parseFloat(d[i]);
+            d.forEach((command, index) => {
+                const num = parseFloat(command);
                 if (!isNaN(num)) {
-                    d[i] = num;
+                    d[index] = num;
                 }
-            }
+            })
         }
+        console.log('d', d)
         //$().uxmessage('notice', "d: " + d.toString());
 
         function nextIsNum() {
@@ -114,6 +127,7 @@ export const SVGReader = {
             }
         }
 
+        // console.log("addPath: " , d);
         var x = 0;
         var y = 0;
         var cmdPrev = '';
@@ -122,11 +136,7 @@ export const SVGReader = {
         var subpath = [];
 
         while (d.length > 0) {
-            // console.log('d', d)
             var cmd = getNext();
-            // process.stdout.clearLine()
-            // process.stdout.cursorTo(0)
-            // process.stdout.write("in node : " + d.length + " point")
             switch (cmd) {
                 case 'M':  // moveto absolute
                     // start new subpath
@@ -167,6 +177,7 @@ export const SVGReader = {
                 case 'z':  // closepath
                     // loop and finalize subpath
                     if (subpath.length > 0) {
+                        console.log('Supatch ::, ', subpath)
                         subpath.push(subpath[0]);  // close
                         node.path.push(subpath);
                         x = subpath[subpath.length - 1][0];
@@ -391,7 +402,7 @@ export const SVGReader = {
                         x = x2
                         y = y2
                     }
-                    break
+                    break;
             }
             cmdPrev = cmd;
             // console.log('subpath : ', subpath, 'cmd : ', cmd, 'x : ', x, 'y : ', y)
@@ -414,11 +425,7 @@ export const SVGReader = {
         // This mean we subdivide more and have more curve points in
         // curvy areas and less in flatter areas of the curve.
 
-        if (level > 18) {
-            // protect from deep recursion cases
-            // max 2**18 = 262144 segments
-            return
-        }
+        if (level > 18) return;
 
         // Calculate all the mid-points of the line segments
         var x12 = (x1 + x2) / 2.0
@@ -450,8 +457,6 @@ export const SVGReader = {
         // Continue subdivision
         this.addCubicBezier(subpath, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1, tolerance2);
         this.addCubicBezier(subpath, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1, tolerance2);
-
-        
     },
 
 

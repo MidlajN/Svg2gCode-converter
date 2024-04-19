@@ -302,7 +302,7 @@ export const svgMapping = {
 
             if (rx == null || ry == null) {  // no rounded corners
                 var d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
-                console.log('d :', d)
+                // console.log('d :', d)
                 parser.addPath(d, node)
             } else {                       // rounded corners
                 if ('ry' == null) { ry = rx; }
