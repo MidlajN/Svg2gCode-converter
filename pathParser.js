@@ -1,5 +1,4 @@
-
-class PathParser {
+export class PathParser {
     constructor() {
         this.tolerance = 0.01;
         this.tolerance_squared = Math.pow(this.tolerance, 2);
@@ -14,13 +13,14 @@ class PathParser {
         let yPrevCp;
         let subpath = [];
         let commands = this.parseCommands(d);
+        this.totalMaxScale = this.matrixGetScale(node.xformToWorld);
 
         const nextIsNum = () => {
-            return (d.length > 0) && (typeof (d[0]) === 'number');
+            return (commands.length > 0) && (typeof (commands[0]) === 'number');
         }
 
         const getNext = () => {
-            if (d.length > 0) return d.shift();  // pop first item
+            if (commands.length > 0) return commands.shift();  // pop first item
             else throw new Error("in addPath: not enough parameters");
         }
 
@@ -382,11 +382,10 @@ class PathParser {
         subpath.push(c5Init);
     }
 
-    // matrixGetScale(mat) {
-    //     let sx = Math.sqrt(mat[0] * mat[0] + mat[1] * mat[1]);
-    //     let sy = Math.sqrt(mat[2] * mat[2] + mat[3] * mat[3]);
-    //     if (sx > sy) return sx; 
-    //     else return sy;
-    // }
-
+    matrixGetScale(mat) {
+        let sx = Math.sqrt(mat[0] * mat[0] + mat[1] * mat[1]);
+        let sy = Math.sqrt(mat[2] * mat[2] + mat[3] * mat[3]);
+        if (sx > sy) return sx; 
+        else return sy;
+    }
 }

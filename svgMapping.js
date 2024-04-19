@@ -1,4 +1,5 @@
 import { getAttribute } from "./xmlFunctions";
+import { PathParser } from './pathParser.js';
 
 export const svgMapping = {
     SVGAttributeMapping: {
@@ -223,8 +224,8 @@ export const svgMapping = {
             // if (!w) w = h
             // else if (!h) h = w
             // if (w) {
-            //   var wpx = parser.parseUnit(w, cn, 'x')
-            //   var hpx = parser.parseUnit(h, cn, 'y')
+            //   var wpx = this.parseUnit(w, cn, 'x')
+            //   var hpx = this.parseUnit(h, cn, 'y')
             // }
         },
 
@@ -240,7 +241,9 @@ export const svgMapping = {
             // has transform and style attributes
             var d = this.__getPolyPath(tag)
             d.push('z')
-            parser.addPath(d, node)
+            // parser.addPath(d, node)
+            new PathParser().parse(d, node);
+
         },
 
 
@@ -248,7 +251,8 @@ export const svgMapping = {
             // http://www.w3.org/TR/SVG11/shapes.html#PolylineElement
             // has transform and style attributes
             var d = this.__getPolyPath(tag)
-            parser.addPath(d, node)
+            // parser.addPath(d, node)
+            new PathParser().parse(d, node);
         },
 
         __getPolyPath: function (tag) {
@@ -287,23 +291,26 @@ export const svgMapping = {
         },
 
         rect: function (parser, tag, node) {
-            console.log('tag', tag)
-            console.log('RECT >>>', getAttribute(tag, 'width'), getAttribute(tag, 'height'), getAttribute(tag, 'x'), getAttribute(tag, 'y'), getAttribute(tag, 'rx'), getAttribute(tag, 'ry'))
+            // console.log('tag', tag, node)
+            // console.log('RECT >>>', getAttribute(tag, 'width'), getAttribute(tag, 'height'), getAttribute(tag, 'x'), getAttribute(tag, 'y'), getAttribute(tag, 'rx'), getAttribute(tag, 'ry'))
             // http://www.w3.org/TR/SVG11/shapes.html#RectElement
             // has transform and style attributes
-            var w = parser.parseUnit(getAttribute(tag, 'width')) || 0;
-            var h = parser.parseUnit(getAttribute(tag, 'height')) || 0;
-            var x = parser.parseUnit(getAttribute(tag, 'x')) || 0;
-            var y = parser.parseUnit(getAttribute(tag, 'y')) || 0;
-            var rx = parser.parseUnit(getAttribute(tag, 'rx')) || 0;
-            var ry = parser.parseUnit(getAttribute(tag, 'ry')) || null;
+            let width = getAttribute(tag, 'width');
+            let height = getAttribute(tag, 'height');
+            var w = this.parseUnit(width) || 0;
+            var h = this.parseUnit(height) || 0;
+            var x = this.parseUnit(getAttribute(tag, 'x')) || 0;
+            var y = this.parseUnit(getAttribute(tag, 'y')) || 0;
+            var rx = this.parseUnit(getAttribute(tag, 'rx')) || 0;
+            var ry = this.parseUnit(getAttribute(tag, 'ry')) || null;
 
-            console.log('RECT >>>', '\nw :', w, '\nh : ', h, '\nx : ', x, '\ny : ', y, '\nrx : ', rx, '\nry : ', ry)
+            // console.log('RECT >>>', '\nw :', w, '\nh : ', h, '\nx : ', x, '\ny : ', y, '\nrx : ', rx, '\nry : ', ry)
 
             if (rx == null || ry == null) {  // no rounded corners
                 var d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
                 // console.log('d :', d)
-                parser.addPath(d, node)
+                // parser.addPath(d, node)
+                new PathParser().parse(d, node);
             } else {                       // rounded corners
                 if ('ry' == null) { ry = rx; }
                 if (rx < 0.0) { rx *= -1; }
@@ -319,7 +326,8 @@ export const svgMapping = {
                     'c', '0.0', '0.0', '0.0', -ry, rx, -ry,
                     'z'];
                     console.log('d :', d)
-                parser.addPath(d, node)
+                // parser.addPath(d, node)
+                new PathParser().parse(d, node);
             }
         },
 
@@ -327,21 +335,22 @@ export const svgMapping = {
         line: function (parser, tag, node) {
             // http://www.w3.org/TR/SVG11/shapes.html#LineElement
             // has transform and style attributes
-            var x1 = parser.parseUnit(getAttribute(tag, 'x1')) || 0
-            var y1 = parser.parseUnit(getAttribute(tag, 'y1')) || 0
-            var x2 = parser.parseUnit(getAttribute(tag, 'x2')) || 0
-            var y2 = parser.parseUnit(getAttribute(tag, 'y2')) || 0
+            var x1 = this.parseUnit(getAttribute(tag, 'x1')) || 0
+            var y1 = this.parseUnit(getAttribute(tag, 'y1')) || 0
+            var x2 = this.parseUnit(getAttribute(tag, 'x2')) || 0
+            var y2 = this.parseUnit(getAttribute(tag, 'y2')) || 0
             var d = ['M', x1, y1, 'L', x2, y2]
-            parser.addPath(d, node)
+            // parser.addPath(d, node)
+            new PathParser().parse(d, node);
         },
 
 
         circle: function (parser, tag, node) {
             // http://www.w3.org/TR/SVG11/shapes.html#CircleElement
             // has transform and style attributes
-            var r = parser.parseUnit(getAttribute(tag, 'r'))
-            var cx = parser.parseUnit(getAttribute(tag, 'cx')) || 0
-            var cy = parser.parseUnit(getAttribute(tag, 'cy')) || 0
+            var r = this.parseUnit(getAttribute(tag, 'r'))
+            var cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
+            var cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
 
             if (r > 0.0) {
                 var d = ['M', cx - r, cy,
@@ -350,17 +359,18 @@ export const svgMapping = {
                     'A', r, r, 0, 0, 0, cx, cy - r,
                     'A', r, r, 0, 0, 0, cx - r, cy,
                     'Z'];
-                parser.addPath(d, node);
+                // parser.addPath(d, node);
+                new PathParser().parse(d, node);
             }
         },
 
 
         ellipse: function (parser, tag, node) {
             // has transform and style attributes
-            var rx = parser.parseUnit(getAttribute(tag, 'rx'))
-            var ry = parser.parseUnit(getAttribute(tag, 'ry'))
-            var cx = parser.parseUnit(getAttribute(tag, 'cx')) || 0
-            var cy = parser.parseUnit(getAttribute(tag, 'cy')) || 0
+            var rx = this.parseUnit(getAttribute(tag, 'rx'))
+            var ry = this.parseUnit(getAttribute(tag, 'ry'))
+            var cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
+            var cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
 
             if (rx > 0.0 && ry > 0.0) {
                 var d = ['M', cx - rx, cy,
@@ -369,7 +379,8 @@ export const svgMapping = {
                     'A', rx, ry, 0, 0, 0, cx, cy - ry,
                     'A', rx, ry, 0, 0, 0, cx - rx, cy,
                     'Z'];
-                parser.addPath(d, node);
+                // parser.addPath(d, node);
+                new PathParser().parse(d, node);
             }
         },
 
@@ -379,7 +390,8 @@ export const svgMapping = {
             // has transform and style attributes
             var d = getAttribute(tag, "d")
             // console.log('d', d)
-            parser.addPath(d, node)
+            // parser.addPath(d, node)
+            new PathParser().parse(d, node);
         },
 
         image: function (parser, tag, node) {
@@ -409,7 +421,26 @@ export const svgMapping = {
             //     }
             //   }
             // }
-        }
+        },
+
+        parseUnit  : function (val) {
+            if (!val) return null;
+            
+            console.log(val)
+            let value = val.toLowerCase();
+            const unitMultipliers = {
+                'cm': 37.79527559,
+                'mm': 3.779527559,
+                'in': 96,
+                'pt': 1.25,
+                'pc': 15
+            };
+            const match = value.match(/[a-z]+$/i);
+            const unit = match ? unitMultipliers[match[0]] || 1 : 1;
+            return parseFloat(value) * unit;
+        },
 
     },
+
+    
 }
