@@ -60,17 +60,11 @@ export function svg2gcode(svg, settings) {
     gcode.push('G0 F' + settings.seekRate);
     gcode.push(['G90', 'G21'].join(' '));
 
-    //getting height
     let height = svg.viewBox[3]
-    // console.log(height)
-    // TODO : change height to something real
-    var lastSamePath = false;
-
     var commandOnActive = true;
     let counter = 0
 
     for (var pathIdx = 0; pathIdx < paths.length; pathIdx++) {
-        // console.log('pathIdx : ', pathIdx)
         counter++
         path = paths[pathIdx];
 
@@ -87,7 +81,6 @@ export function svg2gcode(svg, settings) {
             'Y' + scale(height - path[0].y)
         ].join(' '));
 
-        // console.log('gCode : ', gcode)
         gcode.push('G0 F' + settings.feedRate);
 
         var colorComandOn = "";

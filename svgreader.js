@@ -1,14 +1,15 @@
 import { Vec2 } from './vec2.js'
 import { svgMapping } from './svgMapping.js';
-
 let first_run;
+
+/** 
+ *  Parse SVG Paths into an object representation
+ *  Output path flattened (world coords) hash of path by color
+ *  each path is a list of subpaths, each subpath is a list of verteces
+ */
 export const SVGReader = {
 
     boundarys: {},
-    // output path flattened (world coords)
-    // hash of path by color
-    // each path is a list of subpaths
-    // each subpath is a list of verteces
     style: {},  // style at current parsing position
     tolerance: 0.01,     // max tollerance when tesselating curvy shapes
     

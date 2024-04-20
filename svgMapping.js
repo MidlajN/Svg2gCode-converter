@@ -93,13 +93,15 @@ export const svgMapping = {
             node.xform = xform_combined
         },
 
+        /**
+         * Parses style attribute
+         * eg: <rect x="200" y="100" width="600" height="300" style="fill: red; stroke: blue; stroke-width: 3"/>
+         *     
+         * @param {SVGParser} parser
+         * @param {object} node
+         * @param {string} val style attribute value
+         */
         style: function (parser, node, val) {
-            // style attribute
-            // http://www.w3.org/TR/SVG11/styling.html#StyleAttribute
-            // example: <rect x="200" y="100" width="600" height="300"
-            //          style="fill: red; stroke: blue; stroke-width: 3"/>
-
-            // relay to parse style attributes the same as Presentation Attributes
             var segs = val.split(";")
             for (var i = 0; i < segs.length; i++) {
                 var kv = segs[i].split(":")
@@ -110,6 +112,7 @@ export const svgMapping = {
                 }
             }
         },
+
 
         ///////////////////////////
         // Presentations Attributes
