@@ -38,49 +38,56 @@ Vec2.prototype = {
 
     // Add the incoming `vec2` vector to this vector
     // TODO: mark dirty for other calcs
-    add: function (vec2, returnNew) {
-        if (!returnNew) {
-            this.x += vec2.x;
-            this.y += vec2.y;
-            return this;
-        } else {
-            // Return a new vector if `returnNew` is truthy
-            return new Vec2(
-                this.x + vec2.x,
-                this.y + vec2.y
-            );
-        }
+    add: function (vec2, returnNew = false) {
+        returnNew ? 
+            new Vec2(this.x + vec2.x, this.y + vec2.y) :
+            (this.x += vec2.x, this.y += vec2.y, this);
+        // if (!returnNew) {
+        //     this.x += vec2.x;
+        //     this.y += vec2.y;
+        //     return this;
+        // } else {
+        //     // Return a new vector if `returnNew` is truthy
+        //     return new Vec2(
+        //         this.x + vec2.x,
+        //         this.y + vec2.y
+        //     );
+        // }
     },
 
     // Subtract the incoming `vec2` from this vector
-    // TODO: mark dirty for other calcs
-    subtract: function (vec2, returnNew) {
-        return returnNew ? new Vec2(this.x - vec2.x, this.y - vec2.y) : (this.x -= vec2.x, this.y -= vec2.y, this);
+    subtract: function (vec2, returnNew = false) {
+        return returnNew ? 
+            new Vec2(this.x - vec2.x, this.y - vec2.y) : 
+            (this.x -= vec2.x, this.y -= vec2.y, this);
     },
 
     // Multiply this vector by the incoming `vec2`
-    // TODO: mark dirty for other calcs
-    multiply: function (vec2, returnNew) {
-        var x, y;
-        if (vec2.x !== undefined) {
-            x = vec2.x;
-            y = vec2.y;
+    multiply: function (vec2, returnNew = false) {
+        let x, y;
+        if (vec2.x !== undefined) (x = vec2.x, y = vec2.y); 
+        else ( x = y = vec2);;
+        
+        return returnNew ? new Vec2(this.x * x, this.y * y) : (this.x *= x, this.y *= y, this);
+        // if (vec2.x !== undefined) {
+        //     x = vec2.x;
+        //     y = vec2.y;
 
-            // Handle incoming scalars
-        } else {
-            x = y = vec2;
-        }
+        //     // Handle incoming scalars
+        // } else {
+        //     x = y = vec2;
+        // }
 
-        if (!returnNew) {
-            this.x *= x;
-            this.y *= y;
-            return this;
-        } else {
-            return new Vec2(
-                this.x * x,
-                this.y * y
-            );
-        }
+        // if (!returnNew) {
+        //     this.x *= x;
+        //     this.y *= y;
+        //     return this;
+        // } else {
+        //     return new Vec2(
+        //         this.x * x,
+        //         this.y * y
+        //     );
+        // }
     },
 
     // Rotate this vector. Accepts a `Rotation` or angle in radians.
@@ -92,52 +99,68 @@ Vec2.prototype = {
     // `Vec2` will be created with the values resulting from
     // the rotation. Otherwise the rotation will be applied
     // to this vector directly, and this vector will be returned.
-    rotate: function (r, inverse, returnNew) {
-        var
-            x = this.x,
-            y = this.y,
-            rx, cos, sin, ry;
-
-        inverse = (inverse) ? -1 : 1;
+    rotate: function (r, inverse = false, returnNew = false) {
+        let x = this.x;
+        let y = this.y;
+        const isInverse = (inverse) ? -1 : 1;
+        let cos;
+        let sin;
 
         if (r.s !== undefined) {
             sin = r.s;
             cos = r.c;
         } else {
             sin = Math.sin(r);
-            cos = Math.cos(r)
+            cos = Math.cos(r);
         }
 
-        var
-            x = this.x,
-            y = this.y,
-            rx = cos * x - (inverse * sin) * y,
-            ry = (inverse * sin) * x + cos * y;
+        let rx = cos * x - (isInverse * sin) * y;
+        let ry = (isInverse * sin) * x + cos * y;
 
-        if (returnNew) {
-            return new Vec2(rx, ry);
-        } else {
-            this.set(rx, ry);
-            return this;
-        }
+        return returnNew ? new Vec2(rx, ry) : (this.set(rx, ry), this);
+
+        // var
+        //     x = this.x,
+        //     y = this.y,
+        //     rx, cos, sin, ry;
+
+        // inverse = (inverse) ? -1 : 1;
+
+        // if (r.s !== undefined) {
+        //     sin = r.s;
+        //     cos = r.c;
+        // } else {
+        //     sin = Math.sin(r);
+        //     cos = Math.cos(r);
+        // }
+
+        // var
+        //     x = this.x,
+        //     y = this.y,
+        //     rx = cos * x - (inverse * sin) * y,
+        //     ry = (inverse * sin) * x + cos * y;
+
+        // if (returnNew) {
+        //     return new Vec2(rx, ry);
+        // } else {
+        //     this.set(rx, ry);
+        //     return this;
+        // }
     },
 
     // Calculate the length of this vector (the norm)
-    // TODO: used cached value if available
     length: function () {
         var x = this.x, y = this.y;
         return Math.sqrt(x * x + y * y);
     },
 
     // Get the length squared. For performance, use this instead of `Vec2#length` (if possible).
-    // TODO: use cached value if available
     lengthSquared: function () {
         var x = this.x, y = this.y;
         return x * x + y * y;
     },
 
-    // Return the distance betwen this `Vec2` and the incoming vec2 vector
-    // and return a scalar
+    // Return the distance betwen this `Vec2` and the incoming vec2 vector and return a scalar
     distance: function (vec2) {
         // TODO: prime candidate for optimizations
         return this.subtract(vec2, true).length();
@@ -145,52 +168,50 @@ Vec2.prototype = {
 
     distanceSquared: function (vec2) {
         var c = this.subtract(vec2, true);
-        return dot22(c, c);
+        return c * c;
     },
 
-    // Convert this vector into a unit vector.
-    // Returns the length.
+    // Convert this vector into a unit vector. Returns the length.
     normalize: function () {
-        var length = this.length();
+        let length = this.length();
 
         // Don't bother normalizing a vector with a length ~0
-        if (length < Number.MIN_VALUE) {
-            return 0;
-        }
+        if (length < Number.MIN_VALUE) return 0;
 
         // Collect a ratio to shrink the x and y coords
-        var invertedLength = 1 / length;
+        let invertedLength = 1 / length;
 
-        // Convert the coords to be greater than zero
-        // but smaller than or equal to 1.0
+        // Convert the coords to be greater than zero but smaller than or equal to 1.0
         this.x *= invertedLength;
         this.y *= invertedLength;
-
         return length;
     },
 
     // Determine if another `Vec2`'s components match this ones
-    equal: function (v, w) {
-        if (w === undef) {
-            return (
-                this.x === v.x &&
-                this.y == v.y
-            );
-        } else {
-            return (
-                this.x === v &&
-                this.y === w
-            )
-        }
+    equal: function (v, w = undefined) {
+        return (w === undefined) ?
+            (this.x === v.x && this.y === v.y) :
+            (this.x === v && this.y === w);
     },
+    
+    // equal: function (v, w = undefined) {
+    //     if (w === undefined) {
+    //         return (
+    //             this.x === v.x &&
+    //             this.y === v.y
+    //         );
+    //     } else {
+    //         return (
+    //             this.x === v &&
+    //             this.y === w
+    //         )
+    //     }
+    // },
 
     // Return a new `Vec2` that contains the absolute value of
     // each of this vector's parts
     abs: function () {
-        return new Vec2(
-            Math.abs(this.x),
-            Math.abs(this.y)
-        );
+        return new Vec2(Math.abs(this.x), Math.abs(this.y));
     },
 
     // Return a new `Vec2` consisting of the smallest values
@@ -199,46 +220,59 @@ Vec2.prototype = {
     // When returnNew is truthy, a new `Vec2` will be returned
     // otherwise the minimum values in either this or `v` will
     // be applied to this vector.
-    min: function (v, returnNew) {
-        var
-            tx = this.x,
-            ty = this.y,
-            vx = v.x,
-            vy = v.y,
-            x = tx < vx ? tx : vx,
-            y = ty < vy ? ty : vy;
+    min: function (v, returnNew = false) {
+        let tx = this.x;
+        let ty = this.y;
+        let vx = v.x;
+        let vy = v.y;
+        let x = tx < vx ? tx : vx;
+        let y = ty < vy ? ty : vy;
+        // var
+        //     tx = this.x,
+        //     ty = this.y,
+        //     vx = v.x,
+        //     vy = v.y,
+        //     x = tx < vx ? tx : vx,
+        //     y = ty < vy ? ty : vy;
 
-        if (returnNew) {
-            return new Vec2(x, y);
-        } else {
-            this.x = x;
-            this.y = y;
-            return this;
-        }
+        return returnNew ? new Vec2(x, y) : (this.set(x, y), this);
+        // if (returnNew) {
+        //     return new Vec2(x, y);
+        // } else {
+        //     this.x = x;
+        //     this.y = y;
+        //     return this;
+        // }
     },
 
-    // Return a new `Vec2` consisting of the largest values
-    // from this vector and the incoming
-    //
-    // When returnNew is truthy, a new `Vec2` will be returned
-    // otherwise the minimum values in either this or `v` will
-    // be applied to this vector.
-    max: function (v, returnNew) {
-        var
-            tx = this.x,
-            ty = this.y,
-            vx = v.x,
-            vy = v.y,
-            x = tx > vx ? tx : vx,
-            y = ty > vy ? ty : vy;
+    /**
+     * Return a new `Vec2` consisting of the largest values from this vector and the incoming.
+     * When `returnNew` is truthy, a new `Vec2` will be returned otherwise the minimum values 
+     * in either this or `v` will be applied to this vector.
+     */
+    max: function (v, returnNew = false) {
+        let tx = this.x;
+        let ty = this.y;
+        let vx = v.x;
+        let vy = v.y;
+        let x = tx > vx ? tx : vx;
+        let y = ty > vy ? ty : vy;
+        // var
+        //     tx = this.x,
+        //     ty = this.y,
+        //     vx = v.x,
+        //     vy = v.y,
+        //     x = tx > vx ? tx : vx,
+        //     y = ty > vy ? ty : vy;
 
-        if (returnNew) {
-            return new Vec2(x, y);
-        } else {
-            this.x = x;
-            this.y = y;
-            return this;
-        }
+        return returnNew ? new Vec2(x, y) : (this.set(x, y), this);
+        // if (returnNew) {
+        //     return new Vec2(x, y);
+        // } else {
+        //     this.x = x;
+        //     this.y = y;
+        //     return this;
+        // }
     },
 
     // Clamp values into a range.
@@ -248,16 +282,16 @@ Vec2.prototype = {
     //
     // Passing returnNew as true will cause a new Vec2 to be
     // returned.  Otherwise, this vector's values will be clamped
-    clamp: function (low, high, returnNew) {
-        var ret = this.min(high, true).max(low)
-        if (returnNew) {
-            return ret;
-        } else {
-            this.x = ret.x;
-            this.y = ret.y;
-            return this;
-        }
-    },
+    // clamp: function (low, high, returnNew) {
+    //     var ret = this.min(high, true).max(low)
+    //     if (returnNew) {
+    //         return ret;
+    //     } else {
+    //         this.x = ret.x;
+    //         this.y = ret.y;
+    //         return this;
+    //     }
+    // },
 
     // Ensure this vector contains finite values
     isValid: function () {

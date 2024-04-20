@@ -61,7 +61,7 @@ export const SVGReader = {
 
                 node.path.forEach(subPath => {
                     subPath.forEach((path, index) => {
-                        subPath[index] = new Vec2(path[0], path[1]).subtract({x: 2, y:2});
+                        subPath[index] = new Vec2(path[0], path[1]);
                     })
                     this.boundarys.allcolors.push(subPath);
                 })
