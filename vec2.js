@@ -1,23 +1,17 @@
 
-// ### Common / Math / Vec2
-
-// A 2D column vector
+/**
+ * Represents a 2D column vector.
+ * @constructor
+ * @param {number} x - The x-coordinate of the vector.
+ * @param {number} y - The y-coordinate of the vector.
+ */
 export function Vec2(x, y) {
-    if (x) {
-        this.x = x;
-    }
-
-    if (y) {
-        this.y = y;
-    }
+    this.x = x || 0;
+    this.y = y || 0;
 };
 
 Vec2.prototype = {
-    x: 0,
-    y: 0,
-
     // set x and y
-    // TODO: mark as dirty for other calculations
     set: function (x, y) {
         this.x = x;
         this.y = y;
@@ -25,7 +19,6 @@ Vec2.prototype = {
     },
 
     // reset x and y to zero
-    // TODO: mark as dirty for other calcs
     zero: function () {
         this.x = 0;
         this.y = 0;
@@ -33,7 +26,7 @@ Vec2.prototype = {
     },
 
     // negate the values of this vector and return a new Vec2
-    negate: function (returnNew) {
+    negate: function (returnNew = false) {
         if (returnNew) {
             return new Vec2(-this.x, -this.y);
         } else {
@@ -62,24 +55,14 @@ Vec2.prototype = {
     // Subtract the incoming `vec2` from this vector
     // TODO: mark dirty for other calcs
     subtract: function (vec2, returnNew) {
-        if (!returnNew) {
-            this.x -= vec2.x;
-            this.y -= vec2.y;
-            return this;
-        } else {
-            // Return a new vector if `returnNew` is truthy
-            return new Vec2(
-                this.x - vec2.x,
-                this.y - vec2.y
-            );
-        }
+        return returnNew ? new Vec2(this.x - vec2.x, this.y - vec2.y) : (this.x -= vec2.x, this.y -= vec2.y, this);
     },
 
     // Multiply this vector by the incoming `vec2`
     // TODO: mark dirty for other calcs
     multiply: function (vec2, returnNew) {
         var x, y;
-        if (vec2.x !== undef) {
+        if (vec2.x !== undefined) {
             x = vec2.x;
             y = vec2.y;
 
@@ -117,7 +100,7 @@ Vec2.prototype = {
 
         inverse = (inverse) ? -1 : 1;
 
-        if (r.s !== undef) {
+        if (r.s !== undefined) {
             sin = r.s;
             cos = r.c;
         } else {
@@ -287,3 +270,4 @@ Vec2.prototype = {
         return new Vec2(-this.y, this.x)
     }
 };
+

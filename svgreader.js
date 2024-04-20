@@ -24,7 +24,7 @@ export const SVGReader = {
     parseChildren: function (domNode) {
         let dNode = first_run ? (first_run = false, domNode) : dNode;
         let parentChilds = [[dNode, {}]];
-        let node = { stroke: "#FFFFFF", xformToWorld: [1, 0, 0, 1, 0, 0] };
+        let node = { stroke: "#FFFFFF", xformToWorld: [1, 0, 0, 1, 0, 0], viewBox: dNode.viewBox };
 
         for (let i = 0; i < parentChilds.length; i++) {
             let tag = parentChilds[i][0];
@@ -37,7 +37,8 @@ export const SVGReader = {
                     xform: [1, 0, 0, 1, 0, 0],
                     fill: parentNode.fill,
                     stroke: parentNode.stroke,
-                    strokeWidth: 1
+                    strokeWidth: 1,
+                    viewBox: dNode.viewBox
                 };
                 const strokeWidth = tag.attributes[tag.attributes.length - 1].value;
                 node.strokeWidth = strokeWidth ? strokeWidth : 1;
@@ -45,7 +46,7 @@ export const SVGReader = {
                 if (tag.attributes) {
                     tag.attributes.forEach(attr => {
                         if (attr.name && attr.value && svgMapping.SVGAttributeMapping[attr.name]) {
-                            console.log(attr.name, attr.value)
+                            // console.log(attr.name, attr.value, node)
                             svgMapping.SVGAttributeMapping[attr.name](this, node, attr.value);
                         }
                     })
@@ -60,10 +61,7 @@ export const SVGReader = {
 
                 node.path.forEach(subPath => {
                     subPath.forEach((path, index) => {
-                        // console.log(path)
-                        // let temp = this.matrixApply(node.xformToWorld, path);
-                        // console.log(temp)
-                        subPath[index] = new Vec2(path[0], path[1]);
+                        subPath[index] = new Vec2(path[0], path[1]).subtract({x: 2, y:2});
                     })
                     this.boundarys.allcolors.push(subPath);
                 })

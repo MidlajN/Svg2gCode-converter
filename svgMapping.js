@@ -1,6 +1,7 @@
 import { getAttribute } from "./xmlFunctions";
 import { PathParser } from './pathParser.js';
 
+const pathParser = new PathParser();
 export const svgMapping = {
     SVGAttributeMapping: {
         DEG_TO_RAD: Math.PI / 180,
@@ -242,7 +243,7 @@ export const svgMapping = {
             var d = this.__getPolyPath(tag)
             d.push('z')
             // parser.addPath(d, node)
-            new PathParser().parse(d, node);
+            pathParser.parse(d, node);
 
         },
 
@@ -252,7 +253,7 @@ export const svgMapping = {
             // has transform and style attributes
             var d = this.__getPolyPath(tag)
             // parser.addPath(d, node)
-            new PathParser().parse(d, node);
+            pathParser.parse(d, node);
         },
 
         __getPolyPath: function (tag) {
@@ -310,7 +311,7 @@ export const svgMapping = {
                 var d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
                 // console.log('d :', d)
                 // parser.addPath(d, node)
-                new PathParser().parse(d, node);
+                pathParser.parse(d, node);
             } else {                       // rounded corners
                 if ('ry' == null) { ry = rx; }
                 if (rx < 0.0) { rx *= -1; }
@@ -327,7 +328,7 @@ export const svgMapping = {
                     'z'];
                     console.log('d :', d)
                 // parser.addPath(d, node)
-                new PathParser().parse(d, node);
+                pathParser.parse(d, node);
             }
         },
 
@@ -341,7 +342,7 @@ export const svgMapping = {
             var y2 = this.parseUnit(getAttribute(tag, 'y2')) || 0
             var d = ['M', x1, y1, 'L', x2, y2]
             // parser.addPath(d, node)
-            new PathParser().parse(d, node);
+            pathParser.parse(d, node);
         },
 
 
@@ -360,7 +361,7 @@ export const svgMapping = {
                     'A', r, r, 0, 0, 0, cx - r, cy,
                     'Z'];
                 // parser.addPath(d, node);
-                new PathParser().parse(d, node);
+                pathParser.parse(d, node);
             }
         },
 
@@ -380,7 +381,7 @@ export const svgMapping = {
                     'A', rx, ry, 0, 0, 0, cx - rx, cy,
                     'Z'];
                 // parser.addPath(d, node);
-                new PathParser().parse(d, node);
+                pathParser.parse(d, node);
             }
         },
 
@@ -391,7 +392,7 @@ export const svgMapping = {
             var d = getAttribute(tag, "d")
             // console.log('d', d)
             // parser.addPath(d, node)
-            new PathParser().parse(d, node);
+            pathParser.parse(d, node);
         },
 
         image: function (parser, tag, node) {

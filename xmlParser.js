@@ -1,12 +1,12 @@
 // Importing in another file
 import {
-    isa_hash,
-    isa_array,
+    // isa_hash,
+    // isa_array,
     containString,
     decode_entities,
     num_keys,
     first_key,
-    trim,
+    // trim,
   } from './xmlFunctions.js'; 
   
 
@@ -72,8 +72,10 @@ export class XMLParser {
 
             // text leading up to tag = content of parent node
             if (before.match(/\S/)) {
-                if (typeof (branch[this.dataKey]) != 'undefined') branch[this.dataKey] += ' '; else branch[this.dataKey] = '';
-                branch[this.dataKey] += !this.preserveWhitespace ? trim(decode_entities(before)) : decode_entities(before);
+                // console.log('before >>', before)
+                if (typeof (branch[this.options.dataKey]) != 'undefined') branch[this.options.dataKey] += ' '; else branch[this.options.dataKey] = '';
+                // branch[this.dataKey] += !this.preserveWhitespace ? trim(decode_entities(before)) : decode_entities(before);
+                branch[this.options.dataKey] += !this.options.preserveWhitespace ? decode_entities(before).trim() : decode_entities(before);
             }
 
             if (tag.match(this.regex.patSpecialTag))  {
@@ -83,8 +85,8 @@ export class XMLParser {
                     tag = this.parseCommentNode(tag);
                 else if (tag.match(/^\s*\!DOCTYPE/)) {
                     tag = this.parseCDATANode(tag);
-                    if (typeof (branch[this.dataKey]) != 'undefined') branch[this.dataKey] += ' '; else branch[this.dataKey] = '';
-                    branch[this.dataKey] += !this.preserveWhitespace ? trim(decode_entities(tag)) : decode_entities(tag);
+                    if (typeof (branch[this.options.dataKey]) != 'undefined') branch[this.options.dataKey] += ' '; else branch[this.options.dataKey] = '';
+                    branch[this.options.dataKey] += !this.preserveWhitespace ? decode_entities(tag).trim() : decode_entities(tag);
                 } else {
                     this.throwParseError("Malformed special tag", tag);
                     break;

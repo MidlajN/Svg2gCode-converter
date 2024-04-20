@@ -18,17 +18,17 @@ export function parse_xml(text, opts) {
     return parser.error() ? parser.getLastError() : parser.getTree();
 };
 
-export function trim(text) {
-    // strip whitespace from beginning and end of string
-    if (text == null) return '';
+// export function trim(text) {
+//     // strip whitespace from beginning and end of string
+//     if (text == null) return '';
 
-    if (text && text.replace) {
-        text = text.replace(/^\s+/, "");
-        text = text.replace(/\s+$/, "");
-    }
+//     if (text && text.replace) {
+//         text = text.replace(/^\s+/, "");
+//         text = text.replace(/\s+$/, "");
+//     }
 
-    return text;
-};
+//     return text;
+// };
 
 export function encode_entities(text) {
     // Simple entitize exports.for = export function for composing XML

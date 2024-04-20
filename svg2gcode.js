@@ -18,7 +18,7 @@ let scale = function (val) { // val is a point value
 export function svg2gcode(svg, settings) {
 
     paths = SVGReader.parse(svg, {}).allcolors;
-    // console.log('paths : ', paths)
+    console.log('paths : ', paths)
 
     var idx = paths.length;
     // console.log('number of paths : ', idx)
@@ -52,7 +52,7 @@ export function svg2gcode(svg, settings) {
         // sort by area
         return (a.bounds.area < b.bounds.area) ? -1 : 1;
     });
-    // console.log('sorted paths : ', paths)
+    console.log('sorted paths : ', paths)
     gcode = [];
 
     gcode.push(settings.start);
