@@ -47,7 +47,6 @@ export const SVGReader = {
                 if (tag.attributes) {
                     tag.attributes.forEach(attr => {
                         if (attr.name && attr.value && svgMapping.SVGAttributeMapping[attr.name]) {
-                            // console.log(attr.name, attr.value, node)
                             svgMapping.SVGAttributeMapping[attr.name](this, node, attr.value);
                         }
                     })
@@ -56,13 +55,15 @@ export const SVGReader = {
                 node.xformToWorld = this.matrixMult(parentNode.xformToWorld, node.xform);
 
                 if (svgMapping.SVGTagMapping[tag.tagName]) {
-                    // console.log(tag)
                     svgMapping.SVGTagMapping[tag.tagName](this, tag, node);
                 }
 
+                console.log(node)
                 node.path.forEach(subPath => {
                     subPath.forEach((path, index) => {
-                        subPath[index] = new Vec2(path[0], path[1]);
+                        subPath[index] = new Vec2(path[0], path[1])
+                            .add({ x: node.xformToWorld[4], y: node.xformToWorld[5] })
+                            .multiply({ x: node.xformToWorld[0], y: node.xformToWorld[3] });
                     })
                     this.boundarys.allcolors.push(subPath);
                 })

@@ -22,8 +22,10 @@ export function svg2gcode(svg, settings) {
     paths.forEach(path => {
         let bounds = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity, area: 0 };
 
+        // console.log('path', path)
         // find lower and upper bounds
         path.forEach(point => {
+            // console.log('point', point)
             if (point.x < bounds.x) bounds.x = point.x;
             if (point.y < bounds.y) bounds.y = point.y;
             if (point.x > bounds.x2) bounds.x2 = point.x;
@@ -37,23 +39,22 @@ export function svg2gcode(svg, settings) {
     paths.sort(function (a, b) { return (a.bounds.area < b.bounds.area) ? -1 : 1; }); // sort by area  
 
     const height = svg.viewBox[3];
-    const width = svg.viewBox[2];
 
     for (let i = 0; i < paths.length; i++) {
 
         let path = paths[i];
         const nextPath = paths[i + 1] ? paths[i + 1] : null;
-        const finalPathX = nextPath !== null ? scale(width - nextPath[0].x) : -1;
+        const finalPathX = nextPath !== null ? scale(nextPath[0].x) : -1;
         const finalPathY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
-        const initialPathX = scale(width - path[path.length - 1].x);
+        const initialPathX = scale(path[path.length - 1].x);
         const initialPathY = scale(height - path[path.length - 1].y);
         const isSamePath = finalPathX === initialPathX && finalPathY === initialPathY;
 
-        gcode.push(`G0 X${scale(width - path[0].x)} Y${scale(height - path[0].y)}`);
+        gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
         gcode.push(`G0 F${settings.seekRate}`);
         gcode.push(settings.colorCommandOn4);
 
-        path.forEach(segment => gcode.push(`G1 X${scale(width - segment.x)} Y${scale(height - segment.y)}`));
+        path.forEach(segment => gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`));
         if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
 
     }

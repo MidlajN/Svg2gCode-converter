@@ -70,7 +70,7 @@ function getSVGShape(shapes, type) {
             { name: 'fill', value: node['fill'] },
             { name: 'stroke', value: node['stroke'] },
             { name: 'stroke-miterlimit', value: node['stroke-miterlimit'] },
-            // { 'name': 'transform', 'value': node['transform'] },
+            { 'name': 'transform', 'value': node['transform'] },
             { name: 'stroke-width', value: node['stroke-width'] },
         ]
 

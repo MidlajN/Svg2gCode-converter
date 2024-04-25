@@ -66,14 +66,10 @@ class Converter {
             XMLRepresentation.viewBox = treeView.viewBox ? treeView.viewBox.split(' ') : '';
             console.log('[+] Converting ...')
 
-            try {
-                let gcode = svg2gcode(XMLRepresentation, this.settings)
-                const gcodeLines = gcode.split('\n')
-                const filteredGCode = gcodeLines.filter((item, pos) =>  pos === 0 || item !== gcodeLines[pos - 1]).join('\n');
-                resolve([filteredGCode])
-            } catch (error) {
-                reject('[!] Occurred Error While Converting... \n',error)
-            }
+            let gcode = svg2gcode(XMLRepresentation, this.settings)
+            const gcodeLines = gcode.split('\n')
+            const filteredGCode = gcodeLines.filter((item, pos) =>  pos === 0 || item !== gcodeLines[pos - 1]).join('\n');
+            resolve([filteredGCode])
         })
     }
 }

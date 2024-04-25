@@ -1,6 +1,6 @@
 export class PathParser {
     constructor() {
-        this.tolerance = 0.001;
+        this.tolerance = 0.0005;
         this.tolerance_squared = Math.pow(this.tolerance, 2);
         this.totalMaxScale = 1;
     }
@@ -14,6 +14,7 @@ export class PathParser {
         let subpath = [];
         let commands = this.parseCommands(d);
         this.totalMaxScale = this.matrixGetScale(node.xformToWorld);
+        this.tolerance_squared /= Math.pow(this.totalMaxScale, 2);
 
         const nextIsNum = () => {
             return (commands.length > 0) && (typeof (commands[0]) === 'number');

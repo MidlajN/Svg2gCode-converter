@@ -13,12 +13,13 @@ export const svgMapping = {
 
         transform: function (parser, node, val) {
             // http://www.w3.org/TR/SVG11/coords.html#EstablishingANewUserSpace
-            var xforms = []
+            var xforms = [];
+
             var segs = val.match(/[a-z]+\s*\([^)]*\)/ig)
             for (var i = 0; i < segs.length; i++) {
                 var kv = segs[i].split("(");
-                var xformKind = kv[0].strip();
-                var paramsTemp = kv[1].strip().slice(0, -1);
+                var xformKind = kv[0]
+                var paramsTemp = kv[1].slice(0, -1);
                 var params = paramsTemp.split(/[\s,]+/).map(parseFloat)
                 // double check params
                 for (var j = 0; j < params.length; j++) {
@@ -84,7 +85,7 @@ export const svgMapping = {
             }
 
             //calculate combined transformation matrix
-            xform_combined = [1, 0, 0, 1, 0, 0]
+            let xform_combined = [1, 0, 0, 1, 0, 0]
             for (var i = 0; i < xforms.length; i++) {
                 xform_combined = parser.matrixMult(xform_combined, xforms[i])
             }
@@ -234,10 +235,10 @@ export const svgMapping = {
         },
 
 
-        g: function (parser, tag, node) {
-            // http://www.w3.org/TR/SVG11/struct.html#Groups
-            // has transform and style attributes
-        },
+        // g: function (parser, tag, node) {
+        //     // http://www.w3.org/TR/SVG11/struct.html#Groups
+        //     // has transform and style attributes
+        // },
 
 
         polygon: function (parser, tag, node) {
@@ -329,7 +330,7 @@ export const svgMapping = {
                     'v', -h + ry,
                     'c', '0.0', '0.0', '0.0', -ry, rx, -ry,
                     'z'];
-                    console.log('d :', d)
+                    // console.log('d :', d)
                 // parser.addPath(d, node)
                 pathParser.parse(d, node);
             }
@@ -429,8 +430,7 @@ export const svgMapping = {
 
         parseUnit  : function (val) {
             if (!val) return null;
-            
-            console.log(val)
+
             let value = val.toLowerCase();
             const unitMultipliers = {
                 'cm': 37.79527559,

@@ -34,7 +34,7 @@ Vec2.prototype = {
 
     // Add the incoming `vec2` vector to this vector
     add: function (vec2, returnNew = false) {
-        returnNew ? 
+        return returnNew ? 
             new Vec2(this.x + vec2.x, this.y + vec2.y) :
             (this.x += vec2.x, this.y += vec2.y, this);
     },
