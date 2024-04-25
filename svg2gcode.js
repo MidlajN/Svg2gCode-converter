@@ -52,34 +52,23 @@ export function svg2gcode(svg, settings) {
         const initialPathY = scale(height - path[path.length - 1].y);
         const isSamePath = finalPathX === initialPathX && finalPathY === initialPathY;
 
-        // seek to index 0
-        // gcode.push(['G0', 'X' + scale(width - path[0].x),'Y' + scale(height - path[0].y)].join(' '));
         gcode.push(`G0 X${scale(width - path[0].x)} Y${scale(height - path[0].y)}`);
-        // gcode.push('G0 F' + settings.feedRate);
-        gcode.push(`G0 F${settings.feedRate}`);
+        gcode.push(`G0 F${settings.seekRate}`);
 
-        // let colorComandOn = settings.colorCommandOn4;
-        let colorComandOff = settings.colorCommandOff4;
-        if (commandOnActive) {
+
+        // if (commandOnActive) {
             gcode.push(settings.colorCommandOn4);
-            commandOnActive = false;
-        }
+            // commandOnActive = false;
+        // }
 
-        // keep track of the current path being cut, as we may need to reverse it
-        // let localPath = [];
-        // path.forEach(segment => {
-            // let localSegment = ['G1', 'X' + scale(width - segment.x), 'Y' + scale(height - segment.y)].join(' ');
-            // gcode.push(localSegment);
-            // localPath.push(localSegment);
-        // })
         path.forEach(segment => gcode.push(`G1 X${scale(width - segment.x)} Y${scale(height - segment.y)}`));
 
         if (!isSamePath) {
-            gcode.push(colorComandOff, `G0 F${settings.feedRate}`);
-            commandOnActive = true;
-            // gcode.push('G0 F' + settings.seekRate);
-        } 
-        else commandOnActive = false;
+            gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
+            // commandOnActive = true;
+        } else {
+            // commandOnActive = false
+        };
     }
     gcode.push(settings.end);
     gcode.push('G1 X0 Y0');
