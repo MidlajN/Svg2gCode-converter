@@ -1,6 +1,6 @@
 export class PathParser {
     constructor() {
-        this.tolerance = 0.01;
+        this.tolerance = 0.001;
         this.tolerance_squared = Math.pow(this.tolerance, 2);
         this.totalMaxScale = 1;
     }

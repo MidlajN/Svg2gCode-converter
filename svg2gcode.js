@@ -1,7 +1,5 @@
 import { SVGReader } from "./svgreader.js"
-// let paths;
-// let gcode = [];
-// let path;
+
 let scale = function (val) { // val is a point value
     // let tmp = 0.352778 * val
     let tmp = val / 96 * 25.4;
@@ -40,13 +38,12 @@ export function svg2gcode(svg, settings) {
 
     const height = svg.viewBox[3];
     const width = svg.viewBox[2];
-    let commandOnActive = true;
 
     for (let i = 0; i < paths.length; i++) {
-        let path = paths[i];
 
+        let path = paths[i];
         const nextPath = paths[i + 1] ? paths[i + 1] : null;
-        const finalPathX = nextPath !== null ? scale(nextPath[0].x) : -1;
+        const finalPathX = nextPath !== null ? scale(width - nextPath[0].x) : -1;
         const finalPathY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
         const initialPathX = scale(width - path[path.length - 1].x);
         const initialPathY = scale(height - path[path.length - 1].y);
@@ -54,21 +51,11 @@ export function svg2gcode(svg, settings) {
 
         gcode.push(`G0 X${scale(width - path[0].x)} Y${scale(height - path[0].y)}`);
         gcode.push(`G0 F${settings.seekRate}`);
-
-
-        // if (commandOnActive) {
-            gcode.push(settings.colorCommandOn4);
-            // commandOnActive = false;
-        // }
+        gcode.push(settings.colorCommandOn4);
 
         path.forEach(segment => gcode.push(`G1 X${scale(width - segment.x)} Y${scale(height - segment.y)}`));
+        if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
 
-        if (!isSamePath) {
-            gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
-            // commandOnActive = true;
-        } else {
-            // commandOnActive = false
-        };
     }
     gcode.push(settings.end);
     gcode.push('G1 X0 Y0');
