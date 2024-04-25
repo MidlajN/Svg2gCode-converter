@@ -152,7 +152,7 @@ export class PathParser {
                 subpath.push(subpath[0]);  // close the path to M
                 node.path.push(subpath);
                 x = subpath[subpath.length - 1][0];
-                y = subpath[subpath.length - 1][0];
+                y = subpath[subpath.length - 1][1];
                 subpath = [];
             }
         }

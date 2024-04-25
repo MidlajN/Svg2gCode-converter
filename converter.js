@@ -59,7 +59,7 @@ class Converter {
         const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
 
         return new Promise((resolve, reject) => {
-            let tree = new XMLParser(svgData, {})
+            let tree = new XMLParser(optimizedSvg, {})
             const treeView = tree.getTree()
 
             let XMLRepresentation = getRepresentation(treeView)
