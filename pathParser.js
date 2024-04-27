@@ -324,7 +324,7 @@ export class PathParser {
         if (r2 < 0.0) r2 = 0.0;
         r2 = Math.sqrt(r2);
 
-        if (large_arc_flag == sweep_flag) r2 = -r2;
+        if (large_arc_flag == sweep) r2 = -r2;
         let cx_ = r2 * rx * y_ / ry;
         let cy_ = -r2 * ry * x_ / rx;
         let cx = cp * cx_ - sp * cy_ + (x1 + x2) / 2.0;

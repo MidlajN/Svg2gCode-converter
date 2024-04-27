@@ -118,8 +118,7 @@ export const svgMapping = {
         ///////////////////////////
         // Presentations Attributes
         // http://www.w3.org/TR/SVG11/styling.html#UsingPresentationAttributes
-        // example: <rect x="200" y="100" width="600" height="300"
-        //          fill="red" stroke="blue" stroke-width="3"/>
+        // example: <rect x="200" y="100" width="600" height="300" fill="red" stroke="blue" stroke-width="3"/>
 
         opacity: function (parser, node, val) {
             node.opacity = parseFloat(val)
@@ -210,28 +209,11 @@ export const svgMapping = {
         }
     },
 
-    // recognized svg attributes
-    /////////////////////////////
-
-    ///////////////////////////
     // recognized svg elements
-
     SVGTagMapping: {
         svg: function (parser, tag, node) {
-            // has style attributes
             node.fill = 'black'
             node.stroke = 'none'
-            // // parse document dimensions
-            // node.width = 0
-            // node.height = 0
-            // var w = tag.getAttribute('width')
-            // var h = tag.getAttribute('height')
-            // if (!w) w = h
-            // else if (!h) h = w
-            // if (w) {
-            //   var wpx = this.parseUnit(w, cn, 'x')
-            //   var hpx = this.parseUnit(h, cn, 'y')
-            // }
         },
 
 
@@ -399,34 +381,34 @@ export const svgMapping = {
             pathParser.parse(d, node);
         },
 
-        image: function (parser, tag, node) {
-            // not supported
-            // has transform and style attributes
-        },
+        // image: function (parser, tag, node) {
+        //     // not supported
+        //     // has transform and style attributes
+        // },
 
-        defs: function (parser, tag, node) {
-            // not supported
-            // http://www.w3.org/TR/SVG11/struct.html#Head
-            // has transform and style attributes
-        },
+        // defs: function (parser, tag, node) {
+        //     // not supported
+        //     // http://www.w3.org/TR/SVG11/struct.html#Head
+        //     // has transform and style attributes
+        // },
 
-        style: function (parser, tag, node) {
-            // not supported: embedded style sheets
-            // http://www.w3.org/TR/SVG11/styling.html#StyleElement
-            // instead presentation attributes and the 'style' attribute
-            // var style = tag.getAttribute("style")
-            // if (style) {
-            //   var segs = style.split(";")
-            //   for (var i=0; i<segs.length; i++) {
-            //     var kv = segs[i].split(":")
-            //     var k = kv[0].strip()
-            //     if (this.SVGAttributeMapping[k]) {
-            //       var v = kv[1].strip()
-            //       this.SVGAttributeMapping[k].call(v, defs, st)
-            //     }
-            //   }
-            // }
-        },
+        // style: function (parser, tag, node) {
+        //     // not supported: embedded style sheets
+        //     // http://www.w3.org/TR/SVG11/styling.html#StyleElement
+        //     // instead presentation attributes and the 'style' attribute
+        //     // var style = tag.getAttribute("style")
+        //     // if (style) {
+        //     //   var segs = style.split(";")
+        //     //   for (var i=0; i<segs.length; i++) {
+        //     //     var kv = segs[i].split(":")
+        //     //     var k = kv[0].strip()
+        //     //     if (this.SVGAttributeMapping[k]) {
+        //     //       var v = kv[1].strip()
+        //     //       this.SVGAttributeMapping[k].call(v, defs, st)
+        //     //     }
+        //     //   }
+        //     // }
+        // },
 
         parseUnit  : function (val) {
             if (!val) return null;
