@@ -47,7 +47,7 @@ export const SVGReader = {
                 if (tag.attributes) {
                     tag.attributes.forEach(attr => {
                         if (attr.name && attr.value && svgMapping.SVGAttributeMapping[attr.name]) {
-                            svgMapping.SVGAttributeMapping[attr.name](this, node, attr.value);
+                            svgMapping.SVGAttributeMapping[attr.name](node, attr.value);
                         }
                     })
                 } 
@@ -55,7 +55,7 @@ export const SVGReader = {
                 node.xformToWorld = this.matrixMult(parentNode.xformToWorld, node.xform);
 
                 if (svgMapping.SVGTagMapping[tag.tagName]) {
-                    svgMapping.SVGTagMapping[tag.tagName](this, tag, node);
+                    svgMapping.SVGTagMapping[tag.tagName](tag, node);
                 }
 
                 console.log(node)
@@ -67,9 +67,9 @@ export const SVGReader = {
                     })
                     this.boundarys.allcolors.push(subPath);
                 })
+                console.log(node)
             }
         }
-
     },
 
     matrixMult: function (mA, mB) {

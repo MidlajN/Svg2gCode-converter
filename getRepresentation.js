@@ -36,7 +36,6 @@ export function getRepresentation(tree) {
 
     node.childNodes.sort((node1, node2) => node1.indexNodeXML - node2.indexNodeXML);
 
-    // console.log('node ', node)
     return node;
 }
 
@@ -54,7 +53,6 @@ function getGs(treeG, gs) {
         }
     }
 
-    // console.log(treeG)
     if (Array.isArray(treeG)) treeG.forEach(element => processNode(element, gs));
     else processNode(treeG, gs);
 
@@ -152,6 +150,6 @@ function getSVGShape(shapes, type) {
     } else {
         result.push(processShape(shapes, type))
     }
-
+    
     return result;
 }

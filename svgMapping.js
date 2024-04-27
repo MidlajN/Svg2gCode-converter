@@ -7,20 +7,18 @@ export const svgMapping = {
         DEG_TO_RAD: Math.PI / 180,
         RAD_TO_DEG: 180 / Math.PI,
 
-        id: function (parser, node, val) {
-            node.id = val
-        },
+        id: (node, val) =>  node.id = val,
 
-        transform: function (parser, node, val) {
-            // http://www.w3.org/TR/SVG11/coords.html#EstablishingANewUserSpace
+        // http://www.w3.org/TR/SVG11/coords.html#EstablishingANewUserSpace
+        transform: function (node, val) {
             var xforms = [];
 
-            var segs = val.match(/[a-z]+\s*\([^)]*\)/ig)
-            for (var i = 0; i < segs.length; i++) {
-                var kv = segs[i].split("(");
-                var xformKind = kv[0]
-                var paramsTemp = kv[1].slice(0, -1);
-                var params = paramsTemp.split(/[\s,]+/).map(parseFloat)
+            var transforms = val.match(/[a-z]+\s*\([^)]*\)/ig)
+            console.log('segs', transforms)
+            for (var i = 0; i < transforms.length; i++) {
+                const [xformKind, paramsTemp] = transforms[i].split(/\(|\)/);
+                let params = paramsTemp.split(/[\s,]+/).map(parseFloat)
+
                 // double check params
                 for (var j = 0; j < params.length; j++) {
                     if (isNaN(params[j])) {
@@ -31,14 +29,13 @@ export const svgMapping = {
 
                 // translate
                 if (xformKind == 'translate') {
-                    if (params.length == 1) {
-                        xforms.push([1, 0, 0, 1, params[0], params[0]])
-                    } else if (params.length == 2) {
-                        xforms.push([1, 0, 0, 1, params[0], params[1]])
-                    } else {
+                    if (params.length > 2) {
                         throw new Error('translate skipped; invalid num of params');
                     }
-                    // rotate
+                    const [x, y] = params.length === 1 ? [params[0], params[0]] : params;
+                    xforms.push([1, 0, 0, 1, x, y])
+
+                // rotate
                 } else if (xformKind == 'rotate') {
                     if (params.length == 3) {
                         var angle = params[0] * this.DEG_TO_RAD
@@ -87,7 +84,7 @@ export const svgMapping = {
             //calculate combined transformation matrix
             let xform_combined = [1, 0, 0, 1, 0, 0]
             for (var i = 0; i < xforms.length; i++) {
-                xform_combined = parser.matrixMult(xform_combined, xforms[i])
+                xform_combined = this.matrixMult(xform_combined, xforms[i])
             }
 
             // assign
@@ -98,211 +95,124 @@ export const svgMapping = {
          * Parses style attribute
          * eg: <rect x="200" y="100" width="600" height="300" style="fill: red; stroke: blue; stroke-width: 3"/>
          *     
-         * @param {SVGParser} parser
          * @param {object} node
          * @param {string} val style attribute value
          */
-        style: function (parser, node, val) {
-            var segs = val.split(";")
-            for (var i = 0; i < segs.length; i++) {
-                var kv = segs[i].split(":")
-                var k = kv[0].strip()
-                if (this[k]) {
-                    var v = kv[1].strip()
-                    this[k](parser, node, v)
-                }
-            }
+        style: (node, val) => {
+            const styles = val.split(';');
+            styles.forEach(style => {
+                const [key, value] = style.split(':').map(str => str.trim());
+                if (this[key]) this[key](node, value);
+            })
         },
 
+        // Presentations Attributes     http://www.w3.org/TR/SVG11/styling.html#UsingPresentationAttributes
+        opacity: (node, val) => node.opacity = parseFloat(val),
 
-        ///////////////////////////
-        // Presentations Attributes
-        // http://www.w3.org/TR/SVG11/styling.html#UsingPresentationAttributes
-        // example: <rect x="200" y="100" width="600" height="300" fill="red" stroke="blue" stroke-width="3"/>
+        display: (node, val) => node.display = val,
 
-        opacity: function (parser, node, val) {
-            node.opacity = parseFloat(val)
-        },
+        visibility: (node, val) => node.visibility = val,
 
-        display: function (parser, node, val) {
-            node.display = val
-        },
+        fill: function (node, val) { node.fill = this.__parseColor(val, node.color); },
 
-        visibility: function (parser, node, val) {
-            node.visibility = val
-        },
+        stroke: function (node, val) { node.stroke = this.__parseColor(val, node.color) },
 
-        fill: function (parser, node, val) {
-            node.fill = this.__parseColor(val, node.color)
-        },
-
-        stroke: function (parser, node, val) {
-            //node.stroke = this.__parseColor(val, node.color)
-            node.stroke = val;
-        },
-
-        color: function (parser, node, val) {
+        color: function (node, val) {
             if (val == 'inherit') return
             node.color = this.__parseColor(val, node.color)
         },
 
-        'fill-opacity': function (parser, node, val) {
-            node.fillOpacity = Math.min(1, Math.max(0, parseFloat(val)))
-        },
+        'fill-opacity': (node, val) => node.fillOpacity = Math.min(1, Math.max(0, parseFloat(val))),
 
-        'stroke-opacity': function (parser, node, val) {
-            node.strokeOpacity = Math.min(1, Math.max(0, parseFloat(val)))
-        },
-
-        // Presentations Attributes
-        ///////////////////////////
+        'stroke-opacity': (node, val) => node.strokeOpacity = Math.min(1, Math.max(0, parseFloat(val))),
 
         __parseColor: function (val, currentColor) {
+            if (val.charAt(0) === '#' && val.length === 4) {
+                const hexCode = val.slice(1).split('').map(char => char + char).join('');
+                return hexCode.match(/../g).map(hex => parseInt(hex, 16));
+                
+            } else if (val.startsWith('rgb(') || val.startsWith('rgba(')){
+                const isRGB = val.startsWith('rgb(');
+                const rgbValues = val.slice(isRGB ? 4 : 5, -1).split(',');
+                const parsedRGB = rgbValues.map((value, index) => {
+                    const trimmedValue = value.trim();
+                    return trimmedValue.endsWith('%') ?
+                        Math.round(parseFloat(trimmedValue.slice(0, -1)) * (isRGB ? 2.55 : 0.01)) :
+                        index === 3 ? Math.max(0, Math.min(1, parseFloat(trimmedValue))) : parseInt(trimmedValue);
+                })
+                return parsedRGB;
 
-            if (val.charAt(0) == '#') {
-                if (val.length == 4)
-                    val = val.replace(/([^#])/g, '$1$1')
-                var a = val.slice(1).match(/../g).map(
-                    function (i) { return parseInt(i, 16) })
-                return a
-
-            } else if (val.search(/^rgb\(/) != -1) {
-                var a = val.slice(4, -1).split(",")
-                for (var i = 0; i < a.length; i++) {
-                    var c = a[i].strip()
-                    if (c.charAt(c.length - 1) == '%')
-                        a[i] = Math.round(parseFloat(c.slice(0, -1)) * 2.55)
-                    else
-                        a[i] = parseInt(c)
-                }
-                return a
-
-            } else if (val.search(/^rgba\(/) != -1) {
-                var a = val.slice(5, -1).split(",")
-                for (var i = 0; i < 3; i++) {
-                    var c = a[i].strip()
-                    if (c.charAt(c.length - 1) == '%')
-                        a[i] = Math.round(parseFloat(c.slice(0, -1)) * 2.55)
-                    else
-                        a[i] = parseInt(c)
-                }
-                var c = a[3].strip()
-                if (c.charAt(c.length - 1) == '%')
-                    a[3] = Math.round(parseFloat(c.slice(0, -1)) * 0.01)
-                else
-                    a[3] = Math.max(0, Math.min(1, parseFloat(c)))
-                return a
-
-            } else if (val.search(/^url\(/) != -1) {
+            } else if (val.startsWith('url(')) {
                 return [0, 0, 0]
-            } else if (val == 'currentColor') {
-                return currentColor
-            } else if (val == 'none') {
-                return 'none'
-            } else if (val == 'freeze') { // SMIL is evil, but so are we
-                return null
-            } else if (val == 'remove') {
-                return null
-            } else { // unknown value, maybe it's an ICC color
-                return val
+                
+            } else if (val === 'currentColor' || val === 'none' || val === 'freeze' || val === 'remove') {
+                return val === 'currentColor' ? currentColor : val === 'none' ? 'none' : null;
+
+            } else {
+                return val;
             }
-        }
+        },
+
+        matrixMult: function (mA, mB) {
+            return [mA[0] * mB[0] + mA[2] * mB[1],
+            mA[1] * mB[0] + mA[3] * mB[1],
+            mA[0] * mB[2] + mA[2] * mB[3],
+            mA[1] * mB[2] + mA[3] * mB[3],
+            mA[0] * mB[4] + mA[2] * mB[5] + mA[4],
+            mA[1] * mB[4] + mA[3] * mB[5] + mA[5]]
+        },
     },
 
     // recognized svg elements
     SVGTagMapping: {
-        svg: function (parser, tag, node) {
+        svg: function (tag, node) {
             node.fill = 'black'
             node.stroke = 'none'
         },
 
-
-        // g: function (parser, tag, node) {
-        //     // http://www.w3.org/TR/SVG11/struct.html#Groups
-        //     // has transform and style attributes
-        // },
-
-
-        polygon: function (parser, tag, node) {
-            // http://www.w3.org/TR/SVG11/shapes.html#PolygonElement
-            // has transform and style attributes
-            var d = this.__getPolyPath(tag)
-            d.push('z')
-            // parser.addPath(d, node)
+        // http://www.w3.org/TR/SVG11/shapes.html#PolygonElement
+        polygon: function (tag, node) {
+            const d = this.__getPolyPath(tag).concat('z')
             pathParser.parse(d, node);
-
         },
 
-
-        polyline: function (parser, tag, node) {
-            // http://www.w3.org/TR/SVG11/shapes.html#PolylineElement
-            // has transform and style attributes
-            var d = this.__getPolyPath(tag)
-            // parser.addPath(d, node)
+        // http://www.w3.org/TR/SVG11/shapes.html#PolylineElement
+        polyline: function (tag, node) {
+            const d = this.__getPolyPath(tag)
             pathParser.parse(d, node);
         },
 
         __getPolyPath: function (tag) {
-            // has transform and style attributes
-            var subpath = []
-            var verts = getAttribute(tag, "points").toString().split(/[\s,]+/).map(parseFloat);
-            var vertnums = [];
-            for (var i = 0; i < verts.length; i++) {
-                if (verts[i]) {
-                    vertnums.push(verts[i]);
-                }
-            }
-            if (vertnums.length % 2 == 0) {
-                var d = ['M']
-                d.push(vertnums[0])
-                d.push(vertnums[1])
-                for (var i = 2; i < vertnums.length; i += 2) {
-                    d.push(vertnums[i])
-                    d.push(vertnums[i + 1])
-                }
-                return d
-            } else if (verts.length % 2 == 0) {
-                vertnums = verts;
-                var d = ['M']
-                d.push(vertnums[0])
-                d.push(vertnums[1])
-                for (var i = 2; i < vertnums.length; i += 2) {
-                    d.push(vertnums[i])
-                    d.push(vertnums[i + 1])
-                }
-                return d
-            }
-            else {
+            let points = getAttribute(tag, "points").toString().split(/[\s,]+/).map(parseFloat);
+            if (points.length % 2 !== 0) {
                 throw new Error("in __getPolyPath: odd number of verteces");
             }
+            const d = ['M', ...points]
+            return d;
         },
 
-        rect: function (parser, tag, node) {
-            // console.log('tag', tag, node)
-            // console.log('RECT >>>', getAttribute(tag, 'width'), getAttribute(tag, 'height'), getAttribute(tag, 'x'), getAttribute(tag, 'y'), getAttribute(tag, 'rx'), getAttribute(tag, 'ry'))
-            // http://www.w3.org/TR/SVG11/shapes.html#RectElement
-            // has transform and style attributes
+        // http://www.w3.org/TR/SVG11/shapes.html#RectElement
+        rect: function (tag, node) {
             let width = getAttribute(tag, 'width');
             let height = getAttribute(tag, 'height');
-            var w = this.parseUnit(width) || 0;
-            var h = this.parseUnit(height) || 0;
-            var x = this.parseUnit(getAttribute(tag, 'x')) || 0;
-            var y = this.parseUnit(getAttribute(tag, 'y')) || 0;
-            var rx = this.parseUnit(getAttribute(tag, 'rx')) || 0;
-            var ry = this.parseUnit(getAttribute(tag, 'ry')) || null;
+            let w = this.parseUnit(width) || 0;
+            let h = this.parseUnit(height) || 0;
+            let x = this.parseUnit(getAttribute(tag, 'x')) || 0;
+            let y = this.parseUnit(getAttribute(tag, 'y')) || 0;
+            let rx = this.parseUnit(getAttribute(tag, 'rx')) || 0;
+            let ry = this.parseUnit(getAttribute(tag, 'ry')) || null;
 
-            // console.log('RECT >>>', '\nw :', w, '\nh : ', h, '\nx : ', x, '\ny : ', y, '\nrx : ', rx, '\nry : ', ry)
-
-            if (rx == null || ry == null) {  // no rounded corners
-                var d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
-                // console.log('d :', d)
-                // parser.addPath(d, node)
+            if (rx == null || ry == null) { // no rounded corners
+                const d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
                 pathParser.parse(d, node);
-            } else {                       // rounded corners
-                if ('ry' == null) { ry = rx; }
-                if (rx < 0.0) { rx *= -1; }
-                if (ry < 0.0) { ry *= -1; }
-                d = ['M', x + rx, y,
+
+            } else { // rounded corners                       
+                if ('ry' == null) ry = rx;
+                if (rx < 0.0) rx *= -1; 
+                if (ry < 0.0) ry *= -1; 
+
+                d = [
+                    'M', x + rx, y,
                     'h', w - 2 * rx,
                     'c', rx, 0.0, rx, ry, rx, ry,
                     'v', h - ry,
@@ -311,104 +221,65 @@ export const svgMapping = {
                     'c', -rx, '0.0', -rx, -ry, -rx, -ry,
                     'v', -h + ry,
                     'c', '0.0', '0.0', '0.0', -ry, rx, -ry,
-                    'z'];
-                    // console.log('d :', d)
-                // parser.addPath(d, node)
+                    'z'
+                ];
                 pathParser.parse(d, node);
             }
         },
 
-
-        line: function (parser, tag, node) {
-            // http://www.w3.org/TR/SVG11/shapes.html#LineElement
-            // has transform and style attributes
-            var x1 = this.parseUnit(getAttribute(tag, 'x1')) || 0
-            var y1 = this.parseUnit(getAttribute(tag, 'y1')) || 0
-            var x2 = this.parseUnit(getAttribute(tag, 'x2')) || 0
-            var y2 = this.parseUnit(getAttribute(tag, 'y2')) || 0
-            var d = ['M', x1, y1, 'L', x2, y2]
-            // parser.addPath(d, node)
+        line: function (tag, node) {
+            let x1 = this.parseUnit(getAttribute(tag, 'x1')) || 0
+            let y1 = this.parseUnit(getAttribute(tag, 'y1')) || 0
+            let x2 = this.parseUnit(getAttribute(tag, 'x2')) || 0
+            let y2 = this.parseUnit(getAttribute(tag, 'y2')) || 0
+            const d = ['M', x1, y1, 'L', x2, y2]
             pathParser.parse(d, node);
         },
 
 
-        circle: function (parser, tag, node) {
-            // http://www.w3.org/TR/SVG11/shapes.html#CircleElement
-            // has transform and style attributes
-            var r = this.parseUnit(getAttribute(tag, 'r'))
-            var cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
-            var cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
+        circle: function (tag, node) {
+            let r = this.parseUnit(getAttribute(tag, 'r'))
+            let cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
+            let cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
 
             if (r > 0.0) {
-                var d = ['M', cx - r, cy,
+                const d = [ 
+                    'M', cx - r, cy,
                     'A', r, r, 0, 0, 0, cx, cy + r,
                     'A', r, r, 0, 0, 0, cx + r, cy,
                     'A', r, r, 0, 0, 0, cx, cy - r,
                     'A', r, r, 0, 0, 0, cx - r, cy,
-                    'Z'];
-                // parser.addPath(d, node);
+                    'Z'
+                ];
                 pathParser.parse(d, node);
             }
         },
 
 
-        ellipse: function (parser, tag, node) {
-            // has transform and style attributes
-            var rx = this.parseUnit(getAttribute(tag, 'rx'))
-            var ry = this.parseUnit(getAttribute(tag, 'ry'))
-            var cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
-            var cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
+        ellipse: function (tag, node) {
+            let rx = this.parseUnit(getAttribute(tag, 'rx'))
+            let ry = this.parseUnit(getAttribute(tag, 'ry'))
+            let cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
+            let cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
 
             if (rx > 0.0 && ry > 0.0) {
-                var d = ['M', cx - rx, cy,
+                const d = [
+                    'M', cx - rx, cy,
                     'A', rx, ry, 0, 0, 0, cx, cy + ry,
                     'A', rx, ry, 0, 0, 0, cx + rx, cy,
                     'A', rx, ry, 0, 0, 0, cx, cy - ry,
                     'A', rx, ry, 0, 0, 0, cx - rx, cy,
-                    'Z'];
-                // parser.addPath(d, node);
+                    'Z'
+                ];
                 pathParser.parse(d, node);
             }
         },
 
-
-        path: function (parser, tag, node) {
-            // http://www.w3.org/TR/SVG11/paths.html
-            // has transform and style attributes
-            var d = getAttribute(tag, "d")
-            // console.log('d', d)
-            // parser.addPath(d, node)
+        // http://www.w3.org/TR/SVG11/paths.html
+        path: function (tag, node) {
+            let d = getAttribute(tag, "d")
             pathParser.parse(d, node);
         },
-
-        // image: function (parser, tag, node) {
-        //     // not supported
-        //     // has transform and style attributes
-        // },
-
-        // defs: function (parser, tag, node) {
-        //     // not supported
-        //     // http://www.w3.org/TR/SVG11/struct.html#Head
-        //     // has transform and style attributes
-        // },
-
-        // style: function (parser, tag, node) {
-        //     // not supported: embedded style sheets
-        //     // http://www.w3.org/TR/SVG11/styling.html#StyleElement
-        //     // instead presentation attributes and the 'style' attribute
-        //     // var style = tag.getAttribute("style")
-        //     // if (style) {
-        //     //   var segs = style.split(";")
-        //     //   for (var i=0; i<segs.length; i++) {
-        //     //     var kv = segs[i].split(":")
-        //     //     var k = kv[0].strip()
-        //     //     if (this.SVGAttributeMapping[k]) {
-        //     //       var v = kv[1].strip()
-        //     //       this.SVGAttributeMapping[k].call(v, defs, st)
-        //     //     }
-        //     //   }
-        //     // }
-        // },
 
         parseUnit  : function (val) {
             if (!val) return null;
@@ -425,8 +296,5 @@ export const svgMapping = {
             const unit = match ? unitMultipliers[match[0]] || 1 : 1;
             return parseFloat(value) * unit;
         },
-
     },
-
-    
 }
