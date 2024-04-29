@@ -58,7 +58,6 @@ export const SVGReader = {
                     svgMapping.SVGTagMapping[tag.tagName](tag, node);
                 }
 
-                console.log(node)
                 node.path.forEach(subPath => {
                     subPath.forEach((path, index) => {
                         subPath[index] = new Vec2(path[0], path[1])
@@ -67,7 +66,6 @@ export const SVGReader = {
                     })
                     this.boundarys.allcolors.push(subPath);
                 })
-                console.log(node)
             }
         }
     },

@@ -14,7 +14,6 @@ export const svgMapping = {
             var xforms = [];
 
             var transforms = val.match(/[a-z]+\s*\([^)]*\)/ig)
-            console.log('segs', transforms)
             for (var i = 0; i < transforms.length; i++) {
                 const [xformKind, paramsTemp] = transforms[i].split(/\(|\)/);
                 let params = paramsTemp.split(/[\s,]+/).map(parseFloat)
@@ -193,8 +192,8 @@ export const svgMapping = {
 
         // http://www.w3.org/TR/SVG11/shapes.html#RectElement
         rect: function (tag, node) {
-            let width = getAttribute(tag, 'width');
-            let height = getAttribute(tag, 'height');
+            let width = getAttribute(tag, 'width').includes('%') ? node.viewBox[2] : width;
+            let height = getAttribute(tag, 'height').includes('%') ? node.viewBox[3] : height;
             let w = this.parseUnit(width) || 0;
             let h = this.parseUnit(height) || 0;
             let x = this.parseUnit(getAttribute(tag, 'x')) || 0;

@@ -22,10 +22,8 @@ export function svg2gcode(svg, settings) {
     paths.forEach(path => {
         let bounds = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity, area: 0 };
 
-        // console.log('path', path)
         // find lower and upper bounds
         path.forEach(point => {
-            // console.log('point', point)
             if (point.x < bounds.x) bounds.x = point.x;
             if (point.y < bounds.y) bounds.y = point.y;
             if (point.x > bounds.x2) bounds.x2 = point.x;

@@ -68,13 +68,10 @@ export class XMLParser {
         while (matches = this.regex.patTag.exec(this.svg)) {
             let before = matches[1];
             let tag = matches[2];
-            // console.log('matches >>', matches)
 
             // text leading up to tag = content of parent node
             if (before.match(/\S/)) {
-                // console.log('before >>', before)
                 if (typeof (branch[this.options.dataKey]) != 'undefined') branch[this.options.dataKey] += ' '; else branch[this.options.dataKey] = '';
-                // branch[this.dataKey] += !this.preserveWhitespace ? trim(decode_entities(before)) : decode_entities(before);
                 branch[this.options.dataKey] += !this.options.preserveWhitespace ? decode_entities(before).trim() : decode_entities(before);
             }
 
@@ -121,7 +118,6 @@ export class XMLParser {
                     if (this.options.preserveAttributes) {
                         leaf[this.options.attribsKey] = {};
                         attribs = leaf[this.options.attribsKey];
-                        // console.log('attribs >>>>....', attribs)
                     }
 
                     var nameObjectXML = ["rect", "polygon", "ellipse", "circle", "path", "line", "polyline"];
@@ -141,7 +137,6 @@ export class XMLParser {
                     }
 
                     if (!isSelfClosing) {
-                        // console.log('Not Self Closing >====', leaf, 'nodeName >====', nodeName)
                         this.parse(leaf, nodeName);
                         if (this.error()) break;
                     }
@@ -178,7 +173,6 @@ export class XMLParser {
         }
 
         if (branch == this.tree) {
-            // console.log('brnach', branch, 'dataKey', branch[this.dataKey])
             if (typeof (this.tree[this.dataKey]) != 'undefined') delete this.tree[this.dataKey];
 
             if (num_keys(this.tree) > 1) {

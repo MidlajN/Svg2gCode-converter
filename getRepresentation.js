@@ -1,11 +1,9 @@
 
 export function getRepresentation(tree) {
-    // console.log('tree', tree)
     const svgElements = { rect: [], polygon: [], ellipse: [], circle: [], path: [], line: [], polylines: [] };
     const node = { childNodes: [] };
 
     const processShapes = (shapes, name) => {
-        // console.log(shapes)
         shapes.forEach(shape => {
             const shapeGroup = getSVGShape(shape, name);
             shapeGroup.forEach(g => node.childNodes.push(g));
