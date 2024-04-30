@@ -62,7 +62,8 @@ export const SVGReader = {
                     subPath.forEach((path, index) => {
                         subPath[index] = new Vec2(path[0], path[1])
                             .add({ x: node.xformToWorld[4], y: node.xformToWorld[5] })
-                            .multiply({ x: node.xformToWorld[0], y: node.xformToWorld[3] });
+                            .multiply({ x: node.xformToWorld[0], y: node.xformToWorld[3] })
+                            .skew({x: node.xformToWorld[1], y: node.xformToWorld[2]});
                     })
                     this.boundarys.allcolors.push(subPath);
                 })

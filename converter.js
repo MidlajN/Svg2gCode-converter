@@ -64,7 +64,6 @@ class Converter {
 
             let XMLRepresentation = getRepresentation(treeView)
             XMLRepresentation.viewBox = treeView.viewBox ? treeView.viewBox.split(' ') : '';
-            console.log('[+] Converting ...')
 
             let gcode = svg2gcode(XMLRepresentation, this.settings)
             const gcodeLines = gcode.split('\n')

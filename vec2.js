@@ -172,8 +172,12 @@ Vec2.prototype = {
     },
 
     // Get the skew vector such that dot(skew_vec, other) == cross(vec, other)
-    skew: function () {
+    skew: function (angle) {
         // Returns a new vector.
-        return new Vec2(-this.y, this.x)
+        const angleXrad = angle.x * Math.PI / 180;
+        const angleYrad = angle.y * Math.PI / 180;
+        const newX = this.x + this.y * Math.tan(angleXrad);
+        const newY = this.y + this.x * Math.tan(angleYrad);
+        return new Vec2(newX, newY)
     }
 };
