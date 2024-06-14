@@ -61,8 +61,10 @@ class Converter {
         return new Promise((resolve, reject) => {
             let tree = new XMLParser(optimizedSvg, {})
             const treeView = tree.getTree()
+            console.log(treeView)
 
             let XMLRepresentation = getRepresentation(treeView)
+            console.log(XMLRepresentation)
             XMLRepresentation.viewBox = treeView.viewBox ? treeView.viewBox.split(' ') : '';
 
             let gcode = svg2gcode(XMLRepresentation, this.settings)

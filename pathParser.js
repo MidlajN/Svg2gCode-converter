@@ -14,7 +14,10 @@ export class PathParser {
         let subpath = [];
         let commands = this.parseCommands(d);
         const totalMaxScale = this.matrixGetScale(node.xformToWorld);
-        this.tolerance_squared /= Math.pow(totalMaxScale, 2);
+        if (totalMaxScale !== 0) {
+            this.tolerance_squared /= Math.pow(totalMaxScale, 2);
+        }
+        console.log(this.tolerance_squared);
 
         const nextIsNum = () => {
             return (commands.length > 0) && (typeof (commands[0]) === 'number');
@@ -257,7 +260,7 @@ export class PathParser {
         let d2 = Math.abs(((x2 - x4) * dy - (y2 - y4) * dx));
         let d3 = Math.abs(((x3 - x4) * dy - (y3 - y4) * dx));
 
-        if (Math.pow(d2 - d3, 2) < 5.0 * tolerance * (dx * dx + dy * dy)) {
+        if (Math.pow(d2 + d3, 2) < 5.0 * tolerance * (dx * dx + dy * dy)) {
             subpath.push([x4, y4]);
             return;
         }
