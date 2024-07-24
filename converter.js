@@ -11,24 +11,28 @@ import SVGO from 'svgo';
 class Converter {
     constructor(Settings) {
         this.settings = {}
-        this.settings.colorCommandOn4 = "\nG0 Z0 ;ON"
         this.settings.end = "\nG0 X0 Y0;end of file"
 
-        let zOffset = (Settings && Settings.zOffset) ? Settings.zOffset : 2
+        let zOffset = (Settings && Settings.zOffset) ? Settings.zOffset : 3
         let feedRate = (Settings && Settings.feedRate) ? Settings.feedRate : 1400
         let seekRate = (Settings && Settings.seekRate) ? Settings.seekRate : 1100
+        let zValue = (Settings && Settings.zValue) ? Settings.zValue : 10
 
-        this.settings.start = `\nG0 Z${zOffset}`
-        this.settings.colorCommandOff4 = `\nG0 Z${zOffset}`
+        this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
+        // this.settings.colorCommandOff4 = `\nG0 Z${zOffset}`
+        this.settings.colorCommandOff4 = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
+        this.settings.colorCommandOn4 = `\nG0 Z${zValue + zOffset}`
 
-        this.settings.feedRate = feedRate
-        this.settings.seekRate = seekRate
+        this.settings.feedRate = feedRate;
+        this.settings.seekRate = seekRate;
+        this.settings.zValue = zValue;
     }
 
     async convert(svgData) {
         const svgoConfig = {
             js2svg: { indent: 2, pretty: true },
             plugins: [
+                "moveGroupAttrsToElems",
                 "cleanupIds",
                 "removeDoctype",
                 "removeXMLProcInst",
@@ -43,7 +47,6 @@ class Converter {
                 "removeRasterImages",
                 "removeUselessDefs",
                 "removeUnknownsAndDefaults",
-                "moveGroupAttrsToElems",
                 "removeDesc",
                 "convertColors",
                 "sortAttrs",
@@ -52,13 +55,13 @@ class Converter {
                 "convertTransform",   
                 "removeEmptyAttrs",
                 "removeEmptyContainers" ,
-                "collapseGroups",
                 "cleanupNumericValues",                                                              
             ]
         }
         const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
 
         return new Promise((resolve, reject) => {
+            console.log('Optimized SVG : ', optimizedSvg);
             let tree = new XMLParser(optimizedSvg, {})
             const treeView = tree.getTree()
             console.log(treeView)

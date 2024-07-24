@@ -14,7 +14,7 @@ let scale = function (val) { // val is a point value
 export function svg2gcode(svg, settings) {
     let gcode = [];
     gcode.push(settings.start);
-    gcode.push('G0 F' + settings.seekRate);
+    // gcode.push('G0 F' + settings.seekRate);
     gcode.push(['G90', 'G21'].join(' '));
 
     let paths = SVGReader.parse(svg, {}).allcolors;
@@ -49,15 +49,16 @@ export function svg2gcode(svg, settings) {
         const isSamePath = finalPathX === initialPathX && finalPathY === initialPathY;
 
         gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
-        gcode.push(`G0 F${settings.seekRate}`);
+        // gcode.push(`G0 F${settings.seekRate}`);
         gcode.push(settings.colorCommandOn4);
 
-        path.forEach(segment => gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`));
-        if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
+        path.forEach(segment => gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)} F${settings.feedRate}`));
+        // if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
+        if (!isSamePath) gcode.push(settings.colorCommandOff4);
 
     }
     gcode.push(settings.end);
-    gcode.push('G1 X0 Y0');
+    // gcode.push('G1 X0 Y0');
 
     return gcode.join('\n');
 }

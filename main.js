@@ -1,4 +1,4 @@
-import { SVGPathData } from "svg-pathdata";
+// import { SVGPathData } from "svg-pathdata";
 import { Converter } from "./converter";
 
 
@@ -38,11 +38,11 @@ document.getElementById('convertBtn').addEventListener('click', () => {
             gcodeLines.forEach(gcode => {
                 // remove unnecessary whitespace from each line 
                 let trimmedLine = gcode.trim(); 
-                if(trimmedLine.includes('G0 Z3')) {
-                    trimmedLine = 'M03 S000';
-                } else if (trimmedLine.includes('G0 Z0')) {
-                    trimmedLine = 'M03 S123';
-                }
+                // if(trimmedLine.includes('G0 Z3')) {
+                //     trimmedLine = 'M03 S000';
+                // } else if (trimmedLine.includes('G0 Z0')) {
+                //     trimmedLine = 'M03 S123';
+                // }
                 gCode += trimmedLine + '\n';
             });
 
