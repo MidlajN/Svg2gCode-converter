@@ -25,7 +25,8 @@ document.getElementById('convertBtn').addEventListener('click', () => {
         const settings = {
             zOffset : 3, 
             feedRate : 3000,
-            seekRate : 2000
+            seekRate : 2000,
+            zValue: 15
         }
         const converter = new Converter(settings);
 

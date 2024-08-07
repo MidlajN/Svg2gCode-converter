@@ -21,7 +21,7 @@ class Converter {
         this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
         // this.settings.colorCommandOff4 = `\nG0 Z${zOffset}`
         this.settings.colorCommandOff4 = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
-        this.settings.colorCommandOn4 = `\nG0 Z${zValue + zOffset}`
+        this.settings.colorCommandOn4 = `\nG0 Z${zValue}`
 
         this.settings.feedRate = feedRate;
         this.settings.seekRate = seekRate;
@@ -32,14 +32,13 @@ class Converter {
         const svgoConfig = {
             js2svg: { indent: 2, pretty: true },
             plugins: [
-                "moveGroupAttrsToElems",
                 "cleanupIds",
                 "removeDoctype",
                 "removeXMLProcInst",
                 "removeComments",
-                "removeXMLNS",
-                "convertStyleToAttrs",
-                "collapseGroups",
+                "removeXMLNS",//
+                "convertStyleToAttrs", //
+                "moveGroupAttrsToElems",
                 "convertEllipseToCircle",
                 "convertShapeToPath",
                 // "removeDimensions",
@@ -55,6 +54,7 @@ class Converter {
                 "convertTransform",   
                 "removeEmptyAttrs",
                 "removeEmptyContainers" ,
+                "collapseGroups",
                 "cleanupNumericValues",                                                              
             ]
         }
