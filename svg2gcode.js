@@ -17,7 +17,7 @@ export function svg2gcode(svg, settings) {
     // gcode.push('G0 F' + settings.seekRate);
     gcode.push(['G90', 'G21'].join(' '));
 
-    let paths = SVGReader.parse(svg, {}).allcolors;
+    let paths = SVGReader.parse(svg, { tolerance : settings.tolerance }).allcolors;
 
     paths.forEach(path => {
         let bounds = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity, area: 0 };

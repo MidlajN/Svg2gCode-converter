@@ -1,5 +1,6 @@
 import { Vec2 } from './vec2.js'
 import { svgMapping } from './svgMapping.js';
+import { PathParser } from './pathParser.js';
 let first_run;
 
 /** 
@@ -7,17 +8,22 @@ let first_run;
  *  Output path flattened (world coords) hash of path by color
  *  each path is a list of subpaths, each subpath is a list of verteces
  */
+
+const newParser = new PathParser({ tolerance: 0.01 });
+
 export const SVGReader = {
 
     boundarys: {},
     style: {},  // style at current parsing position
     tolerance: 0.01,     // max tollerance when tesselating curvy shapes
+    parser: null,
     
     parse: function (svgstring, config) {
         first_run = true
         this.tolerance_squared = Math.pow(this.tolerance, 2);
         this.boundarys.allcolors = []  // TODO: sort by color
-        this.parseChildren(svgstring)
+        this.parser = new PathParser({ tolerance : config.tolerance })
+        this.parseChildren(svgstring);
         first_run = false
         return this.boundarys
     },
@@ -55,7 +61,7 @@ export const SVGReader = {
                 node.xformToWorld = this.matrixMult(parentNode.xformToWorld, node.xform);
 
                 if (svgMapping.SVGTagMapping[tag.tagName]) {
-                    svgMapping.SVGTagMapping[tag.tagName](tag, node);
+                    svgMapping.SVGTagMapping[tag.tagName](tag, node, this.parser);
                 }
 
                 node.path.forEach(subPath => {
@@ -84,4 +90,12 @@ export const SVGReader = {
         return [mat[0] * vec[0] + mat[2] * vec[1] + mat[4],
         mat[1] * vec[0] + mat[3] * vec[1] + mat[5]];
     },
+
+    newPathParser: function (tolerance) {
+        const config = {
+            tolerance: tolerance
+        }
+        const parser = new PathParser({ tolerance : 0.01 })
+        return parser
+    }
 }

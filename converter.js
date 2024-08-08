@@ -17,6 +17,8 @@ class Converter {
         let feedRate = (Settings && Settings.feedRate) ? Settings.feedRate : 1400
         let seekRate = (Settings && Settings.seekRate) ? Settings.seekRate : 1100
         let zValue = (Settings && Settings.zValue) ? Settings.zValue : 10
+        let tolerance = (Settings && Settings.tolerance) ? Settings.tolerance : 0.01
+
 
         this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
         // this.settings.colorCommandOff4 = `\nG0 Z${zOffset}`
@@ -26,6 +28,7 @@ class Converter {
         this.settings.feedRate = feedRate;
         this.settings.seekRate = seekRate;
         this.settings.zValue = zValue;
+        this.settings.tolerance = tolerance;
     }
 
     async convert(svgData) {

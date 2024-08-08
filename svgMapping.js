@@ -1,7 +1,9 @@
 import { getAttribute } from "./xmlFunctions";
 import { PathParser } from './pathParser.js';
-
-const pathParser = new PathParser();
+const config = {
+    tolerance: 0.01
+}
+// const pathParser = new PathParser(config);
 export const svgMapping = {
     SVGAttributeMapping: {
         DEG_TO_RAD: Math.PI / 180,
@@ -164,21 +166,21 @@ export const svgMapping = {
 
     // recognized svg elements
     SVGTagMapping: {
-        svg: function (tag, node) {
+        svg: function (tag, node, parser) {
             node.fill = 'black'
             node.stroke = 'none'
         },
 
         // http://www.w3.org/TR/SVG11/shapes.html#PolygonElement
-        polygon: function (tag, node) {
+        polygon: function (tag, node, parser) {
             const d = this.__getPolyPath(tag).concat('z')
-            pathParser.parse(d, node);
+            parser.parse(d, node);
         },
 
         // http://www.w3.org/TR/SVG11/shapes.html#PolylineElement
-        polyline: function (tag, node) {
+        polyline: function (tag, node, parser) {
             const d = this.__getPolyPath(tag)
-            pathParser.parse(d, node);
+            parser.parse(d, node);
         },
 
         __getPolyPath: function (tag) {
@@ -191,7 +193,7 @@ export const svgMapping = {
         },
 
         // http://www.w3.org/TR/SVG11/shapes.html#RectElement
-        rect: function (tag, node) {
+        rect: function (tag, node, parser) {
             let width = getAttribute(tag, 'width').includes('%') ? node.viewBox[2] : getAttribute(tag, 'width');
             let height = getAttribute(tag, 'height').includes('%') ? node.viewBox[3] : getAttribute(tag, 'height');
             let w = this.parseUnit(width) || 0;
@@ -203,7 +205,7 @@ export const svgMapping = {
 
             if (rx == null || ry == null) { // no rounded corners
                 const d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
-                pathParser.parse(d, node);
+                parser.parse(d, node);
 
             } else { // rounded corners                       
                 if ('ry' == null) ry = rx;
@@ -222,21 +224,21 @@ export const svgMapping = {
                     'c', '0.0', '0.0', '0.0', -ry, rx, -ry,
                     'z'
                 ];
-                pathParser.parse(d, node);
+                parser.parse(d, node);
             }
         },
 
-        line: function (tag, node) {
+        line: function (tag, node, parser) {
             let x1 = this.parseUnit(getAttribute(tag, 'x1')) || 0
             let y1 = this.parseUnit(getAttribute(tag, 'y1')) || 0
             let x2 = this.parseUnit(getAttribute(tag, 'x2')) || 0
             let y2 = this.parseUnit(getAttribute(tag, 'y2')) || 0
             const d = ['M', x1, y1, 'L', x2, y2]
-            pathParser.parse(d, node);
+            parser.parse(d, node);
         },
 
 
-        circle: function (tag, node) {
+        circle: function (tag, node, parser) {
             let r = this.parseUnit(getAttribute(tag, 'r'))
             let cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
             let cy = this.parseUnit(getAttribute(tag, 'cy')) || 0
@@ -250,12 +252,12 @@ export const svgMapping = {
                     'A', r, r, 0, 0, 0, cx - r, cy,
                     'Z'
                 ];
-                pathParser.parse(d, node);
+                parser.parse(d, node);
             }
         },
 
 
-        ellipse: function (tag, node) {
+        ellipse: function (tag, node, parser) {
             let rx = this.parseUnit(getAttribute(tag, 'rx'))
             let ry = this.parseUnit(getAttribute(tag, 'ry'))
             let cx = this.parseUnit(getAttribute(tag, 'cx')) || 0
@@ -270,14 +272,14 @@ export const svgMapping = {
                     'A', rx, ry, 0, 0, 0, cx - rx, cy,
                     'Z'
                 ];
-                pathParser.parse(d, node);
+                parser.parse(d, node);
             }
         },
 
         // http://www.w3.org/TR/SVG11/paths.html
-        path: function (tag, node) {
+        path: function (tag, node, parser) {
             let d = getAttribute(tag, "d")
-            pathParser.parse(d, node);
+            parser.parse(d, node);
         },
 
         parseUnit  : function (val) {
