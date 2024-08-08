@@ -13,11 +13,16 @@ export class PathParser {
         let yPrevCp;
         let subpath = [];
         let commands = this.parseCommands(d);
+
         const totalMaxScale = this.matrixGetScale(node.xformToWorld);
+        let tolerance_squared = this.tolerance_squared;
+
         if (totalMaxScale !== 0) {
-            this.tolerance_squared /= Math.pow(totalMaxScale, 2);
+            tolerance_squared /= Math.pow(totalMaxScale, 2);
         }
-        console.log(this.tolerance_squared);
+
+        console.log('totalMaxScale -> ', totalMaxScale)
+        console.log('Tolerance Squared ->', tolerance_squared);
 
         const nextIsNum = () => {
             return (commands.length > 0) && (typeof (commands[0]) === 'number');
@@ -75,7 +80,7 @@ export class PathParser {
                 let y4 = isRelative ? y + getNext() : getNext();
 
                 subpath.push([x, y]);
-                this.addCubicBezier(subpath, x, y, x2, y2, x3, y3, x4, y4, 0, this.tolerance_squared);
+                this.addCubicBezier(subpath, x, y, x2, y2, x3, y3, x4, y4, 0, tolerance_squared);
                 subpath.push([x4, y4]);
                 x = x4;
                 y = y4;
@@ -94,7 +99,7 @@ export class PathParser {
                 let y4 = isRelative ? y + getNext() : getNext();
 
                 subpath.push([x, y]);
-                this.addCubicBezier(subpath, x, y, x2, y2, x3, y3, x4, y4, 0, this.tolerance_squared);
+                this.addCubicBezier(subpath, x, y, x2, y2, x3, y3, x4, y4, 0, tolerance_squared);
                 subpath.push([x4, y4]);
                 x = x4;
                 y = y4;
@@ -111,7 +116,7 @@ export class PathParser {
                 let y3 = isRelative ? y + getNext() : getNext();
 
                 subpath.push([x, y]);
-                this.addQuadraticBezier(subpath, x, y, x2, y2, x3, y3, 0, this.tolerance_squared);
+                this.addQuadraticBezier(subpath, x, y, x2, y2, x3, y3, 0, tolerance_squared);
                 subpath.push([x3, y3]);
                 x = x3;
                 y = y3;
@@ -126,7 +131,7 @@ export class PathParser {
                 let y3 = isRelative ? y + getNext() : getNext();
 
                 subpath.push([x, y]);
-                this.addQuadraticBezier(subpath, x, y, x2, y2, x3, y3, 0, this.tolerance_squared);
+                this.addQuadraticBezier(subpath, x, y, x2, y2, x3, y3, 0, tolerance_squared);
                 subpath.push([x3, y3]);
                 x = x3;
                 y = y3;
@@ -145,7 +150,7 @@ export class PathParser {
                 let x2 = isRelative ? x + getNext() : getNext();
                 let y2 = isRelative ? y + getNext() : getNext();
 
-                this.addArc(subpath, x, y, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x2, y2, this.tolerance_squared);
+                this.addArc(subpath, x, y, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x2, y2, tolerance_squared);
                 x = x2;
                 y = y2;
             }
