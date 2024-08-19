@@ -27,7 +27,7 @@ document.getElementById('convertBtn').addEventListener('click', () => {
             feedRate : 3000,
             seekRate : 2000,
             zValue: 15,
-            tolerance: 1
+            tolerance: 0.1
         }
         const converter = new Converter(settings);
 

@@ -21,8 +21,8 @@ export class PathParser {
             tolerance_squared /= Math.pow(totalMaxScale, 2);
         }
 
-        console.log('totalMaxScale -> ', totalMaxScale)
-        console.log('Tolerance Squared ->', tolerance_squared);
+        // console.log('totalMaxScale -> ', totalMaxScale)
+        // console.log('Tolerance Squared ->', tolerance_squared);
 
         const nextIsNum = () => {
             return (commands.length > 0) && (typeof (commands[0]) === 'number');

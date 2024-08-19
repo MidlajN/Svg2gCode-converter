@@ -9,7 +9,6 @@ let first_run;
  *  each path is a list of subpaths, each subpath is a list of verteces
  */
 
-const newParser = new PathParser({ tolerance: 0.01 });
 
 export const SVGReader = {
 
