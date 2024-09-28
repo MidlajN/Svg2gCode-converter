@@ -1,6 +1,6 @@
 {
   "name": "svg-to-gcode",
-  "version": "1.2.5",
+  "version": "1.2.8",
   "type": "module",
   "main": "converter.js",
   "scripts": {

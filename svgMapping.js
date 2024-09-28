@@ -205,6 +205,7 @@ export const svgMapping = {
 
             if (rx == null || ry == null) { // no rounded corners
                 const d = ['M', x, y, 'h', w, 'v', h, 'h', -w, 'z'];
+    
                 parser.parse(d, node);
 
             } else { // rounded corners                       

@@ -65,10 +65,17 @@ export const SVGReader = {
 
                 node.path.forEach(subPath => {
                     subPath.forEach((path, index) => {
-                        subPath[index] = new Vec2(path[0], path[1])
-                            .skew({x: node.xformToWorld[1], y: node.xformToWorld[2]})
-                            .multiply({ x: node.xformToWorld[0], y: node.xformToWorld[3] })
-                            .add({ x: node.xformToWorld[4], y: node.xformToWorld[5] });
+                        const value = new Vec2(
+                            path[0] * node.xformToWorld[0] + path[1] * node.xformToWorld[2] + node.xformToWorld[4],  // x' = path[0]*a + path[1]*c + e
+                            path[0] * node.xformToWorld[1] + path[1] * node.xformToWorld[3] + node.xformToWorld[5] // y' = path[0]*b + path[1]*d + f
+                        );
+                        // const value = new Vec2(path[0], path[1])
+                        //     .multiply({ x: node.xformToWorld[0], y: node.xformToWorld[3]})
+                        //     .skew({x: node.xformToWorld[2], y: node.xformToWorld[1]})
+                        //     .rotate(Math.atan2(node.xformToWorld[1], node.xformToWorld[0]))
+                        //     .add({ x: node.xformToWorld[4] , y: node.xformToWorld[5] });
+
+                        subPath[index] = value;
                     })
                     this.boundarys.allcolors.push(subPath);
                 })

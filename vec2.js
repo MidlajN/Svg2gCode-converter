@@ -51,8 +51,7 @@ Vec2.prototype = {
         let x, y;
         if (vec2.x !== undefined) (x = vec2.x, y = vec2.y); 
         else ( x = y = vec2);;
-        
-        return returnNew ? new Vec2(this.x * x, this.y * y) : (this.x *= x, this.y *= y, this);
+        return returnNew ? new Vec2(this.x * (x === 0 ? 1 : x), this.y * (y === 0 ? 1 : y)) : (this.x *= (x === 0 ? 1 : x), this.y *= (y === 0 ? 1 : y), this);
     },
 
     /**
