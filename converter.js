@@ -64,13 +64,13 @@ class Converter {
         const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
 
         return new Promise((resolve, reject) => {
-            // console.log('Optimized SVG : ', optimizedSvg);
+            // console.log('Optimized SVG : ', optimizedSvg, svgData);
             let tree = new XMLParser(optimizedSvg, {})
             const treeView = tree.getTree()
             // console.log(treeView)
 
             let XMLRepresentation = getRepresentation(treeView)
-            // console.log(XMLRepresentation)
+            // console.log('XMLRepresentation : ',XMLRepresentation)
             XMLRepresentation.viewBox = treeView.viewBox ? treeView.viewBox.split(' ') : '';
 
             let gcode = svg2gcode(XMLRepresentation, this.settings)

@@ -21,9 +21,6 @@ export class PathParser {
             tolerance_squared /= Math.pow(totalMaxScale, 2);
         }
 
-        // console.log('totalMaxScale -> ', totalMaxScale)
-        // console.log('Tolerance Squared ->', tolerance_squared);
-
         const nextIsNum = () => {
             return (commands.length > 0) && (typeof (commands[0]) === 'number');
         }
@@ -34,8 +31,12 @@ export class PathParser {
         }
 
         const moveTo = (isRelative) => {
-            if (subpath.length > 0) (node.path.push(subpath), subpath = []);
-            if (cmdPrev == '' && isRelative) {
+            if (subpath.length > 0) {
+                node.path.push(subpath);
+                subpath = [];
+            };
+
+            if (cmdPrev === '' && isRelative) {
                 // first treated absolute
                 x = getNext();
                 y = getNext();
@@ -158,7 +159,8 @@ export class PathParser {
 
         const finalizeSupPath = () => {
             if (subpath.length > 0) {
-                subpath.push(subpath[0]);  // close the path to M
+                // console.log('SupPath : ', subpath, subpath[0]);
+                // subpath.push(subpath[0]);  // close the path to M
                 node.path.push(subpath);
                 x = subpath[subpath.length - 1][0];
                 y = subpath[subpath.length - 1][1];
@@ -168,6 +170,7 @@ export class PathParser {
 
         while (commands.length > 0) {
             let cmd = getNext(); // Pop first item
+            // console.log('Command : ', cmd)
             const isRelative = cmd.toLowerCase() === cmd;
 
             switch (cmd.toUpperCase()) {
@@ -199,7 +202,9 @@ export class PathParser {
                     arcTo(isRelative);
                     break;
                 case 'Z':
-                    finalizeSupPath();
+                    if (subpath.length > 0) {
+                        subpath.push(subpath[0])
+                    }
                     break;
             }
             cmdPrev = cmd;
