@@ -19,9 +19,8 @@ export function svg2gcode(svg, settings) {
 
     let paths = SVGReader.parse(svg, { tolerance : settings.tolerance }).allcolors;
 
-    paths.forEach(path => {
+    paths = paths.filter((path) => {
         let bounds = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity, area: 0 };
-
         // find lower and upper bounds
         path.forEach(point => {
             if (point.x < bounds.x) bounds.x = point.x;
@@ -31,30 +30,77 @@ export function svg2gcode(svg, settings) {
         });
         bounds.area = (1 + bounds.x2 - bounds.x) * (1 + bounds.y2 - bounds.y);
         path.bounds = bounds;
-    });
+
+        if (bounds.area > settings.minArea) return path          
+    })
 
     // cut the inside parts first
     paths.sort(function (a, b) { return (a.bounds.area < b.bounds.area) ? -1 : 1; }); // sort by area  
 
     const height = svg.viewBox[3];
 
-    for (let i = 0; i < paths.length; i++) {
+    const isNegative = (x, y) => {
+        return x <0 || y < 0;
+    }
 
+    for (let i = 0; i < paths.length; i++) {
         let path = paths[i];
         const nextPath = paths[i + 1] ? paths[i + 1] : null;
+
         const finalPathX = nextPath !== null ? scale(nextPath[0].x) : -1;
         const finalPathY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
         const initialPathX = scale(path[path.length - 1].x);
         const initialPathY = scale(height - path[path.length - 1].y);
         const isSamePath = finalPathX === initialPathX && finalPathY === initialPathY;
+        let outOfLimit = false;
 
-        gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
-        gcode.push(`G1 F${settings.feedRate}`);
-        gcode.push(settings.colorCommandOn4);
+        if (settings.bedSize) {
+            if ( settings.bedSize.width >= scale(path[0].x) && settings.bedSize.height >= scale(height - path[0].y)) {
+                gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
+                // gcode.push(`G1 F${settings.feedRate}`);
+                gcode.push(settings.colorCommandOn4);
+            } else {
+                outOfLimit = true
+            }
+        } else {
+            gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
+            // gcode.push(`G1 F${settings.feedRate}`);
+            gcode.push(settings.colorCommandOn4);
+        }
 
-        path.forEach(segment => gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`));
+        path.forEach(segment => {
+            const x = scale(segment.x);
+            const y = scale(height - segment.y);
+            // gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
+
+            console.log(settings.ignoreNegative)
+            if (settings.ignoreNegative && isNegative(x, y)) {
+                return; // Skip this segment if negative values are to be ignored
+            }
+            
+            if (settings.bedSize) {
+                if (settings.bedSize.width >= x && settings.bedSize.height >= y) {
+                    // console.log(`G1 X${x} Y${y}`)
+                    if (outOfLimit) {
+                        gcode.push(`G0 X${x} Y${y}`)
+                        gcode.push(settings.colorCommandOn4);
+                        outOfLimit = false;
+                    }
+                    gcode.push(`G1 X${x} Y${y}`)
+                } else {
+                    if (gcode[gcode.length - 1] !== settings.colorCommandOff4) {
+                        gcode.push(settings.colorCommandOff4);
+                        outOfLimit = true;
+                    }
+                }
+            } else {
+                gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
+            }
+        });
         // if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
-        if (!isSamePath) gcode.push(settings.colorCommandOff4);
+        if (!isSamePath && gcode[gcode.length - 1] !== settings.colorCommandOff4) {
+            gcode.push(settings.colorCommandOff4)
+        };
 
     }
     gcode.push(settings.end);

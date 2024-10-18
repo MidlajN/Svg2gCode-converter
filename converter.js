@@ -13,11 +13,14 @@ class Converter {
         this.settings = {}
         this.settings.end = "\nG0 X0 Y0;end of file"
 
-        let zOffset = (Settings && Settings.zOffset) ? Settings.zOffset : 3
-        let feedRate = (Settings && Settings.feedRate) ? Settings.feedRate : 1400
-        let seekRate = (Settings && Settings.seekRate) ? Settings.seekRate : 1100
-        let zValue = (Settings && Settings.zValue) ? Settings.zValue : 10
-        let tolerance = (Settings && Settings.tolerance) ? Settings.tolerance : 0.01
+        let zOffset = (Settings && Settings.zOffset) ? Settings.zOffset : 3;
+        let feedRate = (Settings && Settings.feedRate) ? Settings.feedRate : 1400;
+        let seekRate = (Settings && Settings.seekRate) ? Settings.seekRate : 1100;
+        let zValue = (Settings && Settings.zValue) ? Settings.zValue : 10;
+        let tolerance = (Settings && Settings.tolerance) ? Settings.tolerance : 0.01;
+        let minArea = (Settings && Settings.minimumArea) ? Settings.minimumArea : 0;
+        let bedSize = (Settings && Settings.bedSize) ? Settings.bedSize : null;
+        let ignoreNegative = (Settings && Settings.ignoreNegative) ? Settings.ignoreNegative : false;
 
 
         this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
@@ -29,6 +32,9 @@ class Converter {
         this.settings.seekRate = seekRate;
         this.settings.zValue = zValue;
         this.settings.tolerance = tolerance;
+        this.settings.minArea = minArea;
+        this.settings.bedSize = bedSize;
+        this.settings.ignoreNegative = ignoreNegative
     }
 
     async convert(svgData) {

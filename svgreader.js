@@ -22,12 +22,12 @@ export const SVGReader = {
         this.tolerance_squared = Math.pow(this.tolerance, 2);
         this.boundarys.allcolors = []  // TODO: sort by color
         this.parser = new PathParser({ tolerance : config.tolerance })
-        this.parseChildren(svgstring);
+        this.parseChildren(svgstring, config.bedSize);
         first_run = false
         return this.boundarys
     },
 
-    parseChildren: function (domNode) {
+    parseChildren: function (domNode, bedSize) {
         let dNode = first_run ? (first_run = false, domNode) : dNode;
         let parentChilds = [[dNode, {}]];
         let node = { stroke: "#FFFFFF", xformToWorld: [1, 0, 0, 1, 0, 0], viewBox: dNode.viewBox };
@@ -69,12 +69,6 @@ export const SVGReader = {
                             path[0] * node.xformToWorld[0] + path[1] * node.xformToWorld[2] + node.xformToWorld[4],  // x' = path[0]*a + path[1]*c + e
                             path[0] * node.xformToWorld[1] + path[1] * node.xformToWorld[3] + node.xformToWorld[5] // y' = path[0]*b + path[1]*d + f
                         );
-                        // const value = new Vec2(path[0], path[1])
-                        //     .multiply({ x: node.xformToWorld[0], y: node.xformToWorld[3]})
-                        //     .skew({x: node.xformToWorld[2], y: node.xformToWorld[1]})
-                        //     .rotate(Math.atan2(node.xformToWorld[1], node.xformToWorld[0]))
-                        //     .add({ x: node.xformToWorld[4] , y: node.xformToWorld[5] });
-
                         subPath[index] = value;
                     })
                     this.boundarys.allcolors.push(subPath);
