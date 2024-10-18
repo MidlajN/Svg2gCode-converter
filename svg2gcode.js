@@ -39,48 +39,43 @@ export function svg2gcode(svg, settings) {
 
     const height = svg.viewBox[3];
 
-    const isNegative = (x, y) => {
-        return x <0 || y < 0;
+    const isWithinBedSize = (x, y) => {
+        return settings.bedSize.width >= x && settings.bedSize.height > y && ( settings.ignoreNegative ? !(x < 0 || y < 0) : true )
     }
 
     for (let i = 0; i < paths.length; i++) {
         let path = paths[i];
-        const nextPath = paths[i + 1] ? paths[i + 1] : null;
+        const nextPath = paths[i + 1] || null;
 
-        const finalPathX = nextPath !== null ? scale(nextPath[0].x) : -1;
-        const finalPathY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
-        const initialPathX = scale(path[path.length - 1].x);
-        const initialPathY = scale(height - path[path.length - 1].y);
-        const isSamePath = finalPathX === initialPathX && finalPathY === initialPathY;
+        const nextPathStartX = nextPath !== null ? scale(nextPath[0].x) : -1;
+        const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
+        const finalPathX = scale(path[path.length - 1].x);
+        const finalPathY = scale(height - path[path.length - 1].y);
+        const isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
+
         let outOfLimit = false;
 
+        const startX = scale(path[0].x);
+        const startY = scale(height - path[0].y);
+
         if (settings.bedSize) {
-            if ( settings.bedSize.width >= scale(path[0].x) && settings.bedSize.height >= scale(height - path[0].y)) {
-                gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
-                // gcode.push(`G1 F${settings.feedRate}`);
+            if ( isWithinBedSize(startX, startY) ) {
+                gcode.push(`G0 X${ startX } Y${ startY }`);
                 gcode.push(settings.colorCommandOn4);
             } else {
                 outOfLimit = true
             }
         } else {
-            gcode.push(`G0 X${scale(path[0].x)} Y${scale(height - path[0].y)}`);
-            // gcode.push(`G1 F${settings.feedRate}`);
+            gcode.push(`G0 X${ startX } Y${ startY }`);
             gcode.push(settings.colorCommandOn4);
         }
 
         path.forEach(segment => {
             const x = scale(segment.x);
             const y = scale(height - segment.y);
-            // gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
 
-            console.log(settings.ignoreNegative)
-            if (settings.ignoreNegative && isNegative(x, y)) {
-                return; // Skip this segment if negative values are to be ignored
-            }
-            
             if (settings.bedSize) {
-                if (settings.bedSize.width >= x && settings.bedSize.height >= y) {
-                    // console.log(`G1 X${x} Y${y}`)
+                if (isWithinBedSize(x, y)) {
                     if (outOfLimit) {
                         gcode.push(`G0 X${x} Y${y}`)
                         gcode.push(settings.colorCommandOn4);
@@ -96,6 +91,8 @@ export function svg2gcode(svg, settings) {
             } else {
                 gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
             }
+
+            // gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
         });
         // if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
         if (!isSamePath && gcode[gcode.length - 1] !== settings.colorCommandOff4) {
