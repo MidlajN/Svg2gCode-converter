@@ -1,4 +1,4 @@
-# Svg-To-gCode Converter
+# Svg-To-GCode Converter
 
 [![npm version](https://badge.fury.io/js/svg-to-gcode.svg)](https://badge.fury.io/js/svg-to-gcode)
 
@@ -16,11 +16,19 @@ Or, use a script tag :
 <script src="https://unpkg.com/svg-to-gcode@^1.0.0/dist/svg-to-gcode.js"></script>
 
 <script>
-    // Configuration for the plotter gcode
-    let settings = {
-        zOffset : 3,
-        feedRate : 1500,
-        seekRate : 1200
+    // Configuration for the plotter gcode ( the values are in mm)
+    const settings = {
+        zOffset : 3, 
+        feedRate : 3000,
+        seekRate : 2000,
+        zValue: 15,
+        tolerance: 0.1,
+        minimumArea: 2.5,
+        ignoreNegative: true,
+        bedSize: {
+            width: 420,
+            height: 297
+        }
     }
     // For using the default configuration , skip the settings
     const converter = SvgToGcode(settings)
@@ -36,12 +44,22 @@ Or, use a script tag :
 
 import { Converter } from 'svg-to-gcode'
 
-// Set the configuration for the Plotter
+// Configuration for the plotter gcode ( the values are in mm)
 const settings = {
-    zOffset : 3,
-    feedRate : 1600,
-    seekRate : 1300,
+    zOffset : 3, 
+    feedRate : 3000,
+    seekRate : 2000,
+    zValue: -15,
+    tolerance: 0.1,
+    minimumArea: 2.5,
+    ignoreNegative: true,
+    sortByArea: true,
+    bedSize: {
+        width: 420,
+        height: 297
+    }
 }
+
 // For using the default configuration , skip the settings
 const converter = new Converter(settings)
 

@@ -34,8 +34,7 @@ export function svg2gcode(svg, settings) {
         if (bounds.area > settings.minArea) return path          
     })
 
-    // cut the inside parts first
-    paths.sort(function (a, b) { return (a.bounds.area < b.bounds.area) ? -1 : 1; }); // sort by area  
+    if (settings.sortByArea) paths.sort(function (a, b) { return (a.bounds.area < b.bounds.area) ? -1 : 1; }); // sort by area    
 
     const height = svg.viewBox[3];
 

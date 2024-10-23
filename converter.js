@@ -21,11 +21,13 @@ class Converter {
         let minArea = (Settings && Settings.minimumArea) ? Settings.minimumArea : 0;
         let bedSize = (Settings && Settings.bedSize) ? Settings.bedSize : null;
         let ignoreNegative = (Settings && Settings.ignoreNegative) ? Settings.ignoreNegative : false;
+        let sortByArea = (Settings && Settings.sortByArea) ? Settings.sortByArea : false;
 
 
         this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
         // this.settings.colorCommandOff4 = `\nG0 Z${zOffset}`
-        this.settings.colorCommandOff4 = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
+        // this.settings.colorCommandOff4 = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
+        this.settings.colorCommandOff4 = `\nG0 Z${ zValue < 0 ? zValue + zOffset : zValue - zOffset }`
         this.settings.colorCommandOn4 = `\nG0 Z${zValue}`
 
         this.settings.feedRate = feedRate;
@@ -34,7 +36,8 @@ class Converter {
         this.settings.tolerance = tolerance;
         this.settings.minArea = minArea;
         this.settings.bedSize = bedSize;
-        this.settings.ignoreNegative = ignoreNegative
+        this.settings.ignoreNegative = ignoreNegative;
+        this.settings.sortByArea = sortByArea;
     }
 
     async convert(svgData) {
