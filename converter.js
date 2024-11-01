@@ -21,7 +21,7 @@ class Converter {
         let minArea = (Settings && Settings.minimumArea) ? Settings.minimumArea : 0;
         let bedSize = (Settings && Settings.bedSize) ? Settings.bedSize : null;
         let ignoreNegative = (Settings && Settings.ignoreNegative) ? Settings.ignoreNegative : false;
-        let sortByArea = (Settings && Settings.sortByArea) ? Settings.sortByArea : false;
+        let pathPlanning = (Settings && Settings.pathPlanning) ? Settings.pathPlanning : 'minimumTravel';
 
 
         this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
@@ -37,7 +37,7 @@ class Converter {
         this.settings.minArea = minArea;
         this.settings.bedSize = bedSize;
         this.settings.ignoreNegative = ignoreNegative;
-        this.settings.sortByArea = sortByArea;
+        this.settings.pathPlanning = pathPlanning;
     }
 
     async convert(svgData) {

@@ -11,7 +11,7 @@ Install the package using npm:
 ```bash
 npm install svg-to-gcode
 ```
-Or, use a script tag :
+<!-- Or, use a script tag :
 ```javascript
 <script src="https://unpkg.com/svg-to-gcode@^1.0.0/dist/svg-to-gcode.js"></script>
 
@@ -21,10 +21,11 @@ Or, use a script tag :
         zOffset : 3, 
         feedRate : 3000,
         seekRate : 2000,
-        zValue: 15,
+        zValue: -15,
         tolerance: 0.1,
         minimumArea: 2.5,
         ignoreNegative: true,
+        pathPlanning: 'minimumTravel', // Options are 'sortByArea' and 'minmumTravel'
         bedSize: {
             width: 420,
             height: 297
@@ -38,7 +39,7 @@ Or, use a script tag :
     })
 </script>
 
-```
+``` -->
 ## Usage
 ```javascript
 
@@ -53,7 +54,7 @@ const settings = {
     tolerance: 0.1,
     minimumArea: 2.5,
     ignoreNegative: true,
-    sortByArea: true,
+    pathPlanning: 'minimumTravel',
     bedSize: {
         width: 420,
         height: 297

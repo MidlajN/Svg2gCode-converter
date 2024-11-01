@@ -30,7 +30,7 @@ document.getElementById('convertBtn').addEventListener('click', () => {
             tolerance: 0.1,
             minimumArea: 2.5,
             ignoreNegative: true,
-            sortByArea: true,
+            pathPlanning: 'minimumTravel',
             bedSize: {
                 width: 420,
                 height: 297

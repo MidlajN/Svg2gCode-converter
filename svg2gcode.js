@@ -34,7 +34,29 @@ export function svg2gcode(svg, settings) {
         if (bounds.area > settings.minArea) return path          
     })
 
-    if (settings.sortByArea) paths.sort(function (a, b) { return (a.bounds.area < b.bounds.area) ? -1 : 1; }); // sort by area    
+    if (settings.pathPlanning === 'sortByArea') {
+        paths.sort(function (a, b) { return (a.bounds.area < b.bounds.area) ? -1 : 1; }); // sort by area    
+    } else {
+        const sortedPaths = [];
+        let currentPath = paths[0];
+        sortedPaths.push(currentPath);
+
+        while(paths.length > 1) {
+            paths = paths.filter(path => path !== currentPath);
+
+            const lastPosition = currentPath[currentPath.length - 1];
+
+            currentPath = paths.reduce((closest, path) => {
+                const distancetoCurrent = Math.sqrt((path[0].x - lastPosition.x) ** 2 + (path[0].y - lastPosition.y) ** 2);
+                const distancetoClosest = Math.sqrt((closest[0].x - lastPosition.x) ** 2 + (closest[0].y - lastPosition.y) ** 2);
+
+                return distancetoCurrent < distancetoClosest ? path : closest
+            });
+
+            sortedPaths.push(currentPath)
+        }
+        paths = sortedPaths
+    }
 
     const height = svg.viewBox[3];
 
