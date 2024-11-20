@@ -13,7 +13,8 @@ let scale = function (val) { // val is a point value
 
 export function svg2gcode(svg, settings) {
     let gcode = [];
-    gcode.push('G0 F' + settings.seekRate);
+    // gcode.push('G0 F' + settings.seekRate);
+    gcode.push('G1 F' + settings.feedRate);
     gcode.push(settings.start);
     gcode.push('G90 G21');
 
@@ -58,26 +59,90 @@ export function svg2gcode(svg, settings) {
         paths = sortedPaths
     }
 
+    const width = svg.viewBox[2];
     const height = svg.viewBox[3];
 
     const isWithinBedSize = (x, y) => {
-        return settings.bedSize.width >= x && settings.bedSize.height > y && ( settings.ignoreNegative ? !(x < 0 || y < 0) : true )
+        // return settings.bedSize.width >= x && settings.bedSize.height > y && ( settings.ignoreNegative ? !(x < 0 || y < 0) : true )
+        switch (settings.quadrant) {
+            case 1:
+                return settings.bedSize.width >= x && settings.bedSize.height > y && !(x < 0 || y < 0) 
+                // break;
+            case 2:
+                return settings.bedSize.width >= Math.abs(x) && settings.bedSize.height > Math.abs(y) && !(x > 0 || y < 0) 
+                // break;
+            case 3:
+                return settings.bedSize.width >= Math.abs(x) && settings.bedSize.height > Math.abs(y) && !(x > 0 || y > 0) 
+                // break;
+            case 4:
+                return settings.bedSize.width >= Math.abs(x) && settings.bedSize.height > Math.abs(y) && !(x < 0 || y < 0) 
+                // break;
+            default:
+                break;
+        }
+        // return settings.bedSize.width >= Math.abs(x) && settings.bedSize.height > Math.abs(y)
     }
 
     for (let i = 0; i < paths.length; i++) {
         let path = paths[i];
         const nextPath = paths[i + 1] || null;
+        let isSamePath;
+        let startX;
+        let startY;
 
-        const nextPathStartX = nextPath !== null ? scale(nextPath[0].x) : -1;
-        const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
-        const finalPathX = scale(path[path.length - 1].x);
-        const finalPathY = scale(height - path[path.length - 1].y);
-        const isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
+        if (settings.quadrant === 1) {
+            const nextPathStartX = nextPath !== null ? scale(nextPath[0].x) : -1;
+            const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
+            const finalPathX = scale(path[path.length - 1].x);
+            const finalPathY = scale(height - path[path.length - 1].y);
+            isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
+
+            startX = scale(path[0].x);
+            startY = scale(height - path[0].y);
+
+        } else if (settings.quadrant === 2) {
+            const nextPathStartX = nextPath !== null ? scale(nextPath[0].x - width) : -1;
+            const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
+            const finalPathX = scale(path[path.length - 1].x - width);
+            const finalPathY = scale(height - path[path.length - 1].y);
+            isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
+
+            startX = scale(path[0].x - width);
+            startY = scale(height - path[0].y);
+
+        } else if (settings.quadrant === 3) {
+            const nextPathStartX = nextPath !== null ? scale(nextPath[0].x - width) : -1;
+            const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
+            const finalPathX = scale(path[path.length - 1].x - width);
+            const finalPathY = scale(height - path[path.length - 1].y - height);
+            isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
+
+            startX = scale(path[0].x - width);
+            startY = scale(height - path[0].y - height);
+
+        } else if (settings.quadrant === 4) {
+            const nextPathStartX = nextPath !== null ? scale(nextPath[0].x) : -1;
+            const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
+            const finalPathX = scale(path[path.length - 1].x);
+            const finalPathY = scale(height - path[path.length - 1].y - height);
+            isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
+
+            startX = scale(path[0].x);
+            startY = scale(height - path[0].y - height);
+        }
+
+        // const nextPathStartX = nextPath !== null ? scale(nextPath[0].x - width) : -1;
+        // const nextPathStartY = nextPath !== null ? scale(height - nextPath[0].y) : -1;
+        // const finalPathX = scale(path[path.length - 1].x - width);
+        // // const finalPathY = scale(height - path[path.length - 1].y);
+        // const finalPathY = scale(height - path[path.length - 1].y - height);
+        // const isSamePath = nextPathStartX === finalPathX && nextPathStartY === finalPathY;
 
         let outOfLimit = false;
 
-        const startX = scale(path[0].x);
-        const startY = scale(height - path[0].y);
+        // const startX = scale(path[0].x - width);
+        // const startY = scale(height - path[0].y);
+        // const startY = scale(height - path[0].y - height);
 
         if (settings.bedSize) {
             if ( isWithinBedSize(startX, startY) ) {
@@ -90,10 +155,27 @@ export function svg2gcode(svg, settings) {
             gcode.push(`G0 X${ startX } Y${ startY }`);
             gcode.push(settings.colorCommandOn4);
         }
+        console.log('Quadrant : ', settings.quadrant, '\nG-Code : ', gcode)
 
         path.forEach(segment => {
-            const x = scale(segment.x);
-            const y = scale(height - segment.y);
+            let x;
+            let y;
+            if (settings.quadrant === 1) {
+                x = scale(segment.x);
+                y = scale(height - segment.y);
+            } else if (settings.quadrant === 2) {
+                x = scale(segment.x - width);
+                y = scale(height - segment.y);
+            } else if (settings.quadrant === 3) {
+                x = scale(segment.x - width);
+                y = scale(height - segment.y - height);
+            } else if (settings.quadrant === 4) {
+                x = scale(segment.x);
+                y = scale(height - segment.y - height);
+            }
+            // const x = scale(settings.quadrant === 1 ? segment.x : segment.x - width);
+            // // const y = scale(height - segment.y);
+            // const y = scale(height - segment.y);
 
             if (settings.bedSize) {
                 if (isWithinBedSize(x, y)) {
@@ -110,13 +192,14 @@ export function svg2gcode(svg, settings) {
                     }
                 }
             } else {
-                gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
+                gcode.push(`G1 X${x} Y${y}`)
             }
 
             // gcode.push(`G1 X${scale(segment.x)} Y${scale(height - segment.y)}`)
         });
         // if (!isSamePath) gcode.push(settings.colorCommandOff4, `G0 F${settings.feedRate}`);
         if (!isSamePath && gcode[gcode.length - 1] !== settings.colorCommandOff4) {
+            console.log('IsSamePath : ', isSamePath);
             gcode.push(settings.colorCommandOff4)
         };
 

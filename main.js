@@ -29,8 +29,8 @@ document.getElementById('convertBtn').addEventListener('click', () => {
             zValue: -15,
             tolerance: 0.1,
             minimumArea: 2.5,
-            ignoreNegative: true,
             pathPlanning: 'minimumTravel',
+            quadrant: 3,
             bedSize: {
                 width: 420,
                 height: 297

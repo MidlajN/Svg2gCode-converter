@@ -22,6 +22,7 @@ class Converter {
         let bedSize = (Settings && Settings.bedSize) ? Settings.bedSize : null;
         let ignoreNegative = (Settings && Settings.ignoreNegative) ? Settings.ignoreNegative : false;
         let pathPlanning = (Settings && Settings.pathPlanning) ? Settings.pathPlanning : 'minimumTravel';
+        let quadrant = (Settings && Settings.quadrant) ? Settings.quadrant : 1;
 
 
         this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
@@ -38,6 +39,7 @@ class Converter {
         this.settings.bedSize = bedSize;
         this.settings.ignoreNegative = ignoreNegative;
         this.settings.pathPlanning = pathPlanning;
+        this.settings.quadrant = quadrant;
     }
 
     async convert(svgData) {
