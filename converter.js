@@ -10,36 +10,23 @@ import SVGO from 'svgo';
 
 class Converter {
     constructor(Settings) {
-        this.settings = {}
-        this.settings.end = "\nG0 X0 Y0;end of file"
+        const defaultSettings = {
+            zOffset: 3,
+            feedRate: 1400,
+            seekRate: 1100,
+            zValue: 10,
+            tolerance: 0.01,
+            minimumArea: 0,
+            bedSize: null,
+            pathPlanning: 'minimumTravel',
+            quadrant: 1,
+        };
+        this.settings = { ...defaultSettings, ...Settings };
 
-        let zOffset = (Settings && Settings.zOffset) ? Settings.zOffset : 3;
-        let feedRate = (Settings && Settings.feedRate) ? Settings.feedRate : 1400;
-        let seekRate = (Settings && Settings.seekRate) ? Settings.seekRate : 1100;
-        let zValue = (Settings && Settings.zValue) ? Settings.zValue : 10;
-        let tolerance = (Settings && Settings.tolerance) ? Settings.tolerance : 0.01;
-        let minArea = (Settings && Settings.minimumArea) ? Settings.minimumArea : 0;
-        let bedSize = (Settings && Settings.bedSize) ? Settings.bedSize : null;
-        let ignoreNegative = (Settings && Settings.ignoreNegative) ? Settings.ignoreNegative : false;
-        let pathPlanning = (Settings && Settings.pathPlanning) ? Settings.pathPlanning : 'minimumTravel';
-        let quadrant = (Settings && Settings.quadrant) ? Settings.quadrant : 1;
-
-
-        this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
-        // this.settings.colorCommandOff4 = `\nG0 Z${zOffset}`
-        // this.settings.colorCommandOff4 = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`
-        this.settings.colorCommandOff4 = `\nG0 Z${ zValue < 0 ? zValue + zOffset : zValue - zOffset }`
-        this.settings.colorCommandOn4 = `\nG0 Z${zValue}`
-
-        this.settings.feedRate = feedRate;
-        this.settings.seekRate = seekRate;
-        this.settings.zValue = zValue;
-        this.settings.tolerance = tolerance;
-        this.settings.minArea = minArea;
-        this.settings.bedSize = bedSize;
-        this.settings.ignoreNegative = ignoreNegative;
-        this.settings.pathPlanning = pathPlanning;
-        this.settings.quadrant = quadrant;
+        const { zValue, zOffset } = this.settings;
+        this.settings.start = `\nG0 Z${(zValue - zOffset) > 0 ? (zValue - zOffset) : '0'}`;
+        this.settings.zUpCommand = `\nG0 Z${ zValue < 0 ? zValue + zOffset : zValue - zOffset }`;
+        this.settings.zDownCommand = `\nG0 Z${zValue}`;
     }
 
     async convert(svgData) {
@@ -50,8 +37,8 @@ class Converter {
                 "removeDoctype",
                 "removeXMLProcInst",
                 "removeComments",
-                "removeXMLNS",//
-                "convertStyleToAttrs", //
+                "removeXMLNS",
+                "convertStyleToAttrs", 
                 "moveGroupAttrsToElems",
                 "convertEllipseToCircle",
                 "convertShapeToPath",
@@ -75,13 +62,10 @@ class Converter {
         const { data: optimizedSvg } = SVGO.optimize(svgData, svgoConfig);
 
         return new Promise((resolve, reject) => {
-            // console.log('Optimized SVG : ', optimizedSvg, svgData);
             let tree = new XMLParser(optimizedSvg, {})
             const treeView = tree.getTree()
-            // console.log(treeView)
 
             let XMLRepresentation = getRepresentation(treeView)
-            // console.log('XMLRepresentation : ',XMLRepresentation)
             XMLRepresentation.viewBox = treeView.viewBox ? treeView.viewBox.split(' ') : '';
 
             let gcode = svg2gcode(XMLRepresentation, this.settings)
