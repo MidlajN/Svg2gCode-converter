@@ -276,8 +276,8 @@ export class PathParser {
         }
 
         // Continue subdivision
-        this.addCubicBezier(subpath, x1, y1, x12, y12, x123, y123, x1234, y1234, level++, tolerance);
-        this.addCubicBezier(subpath, x1234, y1234, x234, y234, x34, y34, x4, y4, level++, tolerance);
+        this.addCubicBezier(subpath, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1, tolerance);
+        this.addCubicBezier(subpath, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1, tolerance);
     }
 
     addQuadraticBezier(subpath, x1, y1, x2, y2, x3, y3, level, tolerance) {
@@ -301,8 +301,8 @@ export class PathParser {
         }
 
         // Continue Subdivision
-        this.addQuadraticBezier(subpath, x1, y1, x12, y12, x123, y123, level++, tolerance);
-        this.addQuadraticBezier(subpath, x123, y123, x23, y23, x3, y3, level++, tolerance);
+        this.addQuadraticBezier(subpath, x1, y1, x12, y12, x123, y123, level + 1, tolerance);
+        this.addQuadraticBezier(subpath, x123, y123, x23, y23, x3, y3, level + 1, tolerance);
     }
 
     /**

@@ -53,8 +53,8 @@ const settings = {
     zValue: -15,
     tolerance: 0.1,
     minimumArea: 2.5,
-    ignoreNegative: true,
     pathPlanning: 'minimumTravel',
+    quadrant: 1,
     bedSize: {
         width: 420,
         height: 297

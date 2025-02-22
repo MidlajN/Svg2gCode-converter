@@ -20,6 +20,8 @@ class Converter {
             bedSize: null,
             pathPlanning: 'minimumTravel',
             quadrant: 1,
+            xOffset: 0,
+            yOffset: 0,
         };
         this.settings = { ...defaultSettings, ...Settings };
 
