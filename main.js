@@ -31,8 +31,8 @@ document.getElementById('convertBtn').addEventListener('click', () => {
             minimumArea: 2.5,
             pathPlanning: 'minimumTravel',
             quadrant: 1,
-            xOffset: 10,
-            yOffset: 10,
+            // xOffset: 10,
+            // yOffset: 10,
             bedSize: {
                 width: 420,
                 height: 297

@@ -1,15 +1,6 @@
 import { SVGReader } from "./svgreader.js"
 
-// let scale = function (val) { // val is a point value
-//     let tmp = val / 96 * 25.4;
-//     if (tmp.toString().indexOf('.') === -1) tmp = tmp.toString() + '.0';
-//     let split = tmp.toString().split('.')
-//     let decimals = split[1].substring(0, 3)
-//     let result = parseFloat(split[0] + "." + decimals)
-    
-//     return result
-// }
-const scale = (val) => parseFloat((val / 96 * 25.4).toFixed(3))
+const scale = (val) => parseFloat(((val / 96) * 25.4).toFixed(3))
 
 
 export function svg2gcode(svg, settings) {
@@ -105,42 +96,54 @@ export function svg2gcode(svg, settings) {
         return {
             startX: scale(adjustX(path[0].x)),
             startY: scale(adjustY(height - path[0].y)),
-            finalX: scale(adjustX(path[0].x)),
+            // finalX: scale(adjustX(path[0].x)),
+            finalX: scale(adjustX(path[path.length - 1].x)),
             finalY: scale(adjustY(height - path[path.length - 1].y))
         };
     };
+
+    const isAlmostEqual = (a, b, tolerance = 0.5) => {
+        return Math.abs(a - b) < tolerance;
+    }
 
     for (let i = 0; i < paths.length; i++) {
         let path = paths[i];
         const nextPath = paths[i + 1] || null;
 
         const { startX, startY, finalX, finalY } = getBothEndPoints(path);
-        const startOffsetX = parseFloat(startX + settings.xOffset).toFixed(3);
-        const startOffsetY = parseFloat(startY + settings.yOffset).toFixed(3);
+        const startOffsetX = Number(parseFloat(startX + settings.xOffset).toFixed(3));
+        const startOffsetY = Number(parseFloat(startY + settings.yOffset).toFixed(3));
 
         const nexPathEndpoints = getBothEndPoints(nextPath);
-        const isSamePath = nexPathEndpoints ? nexPathEndpoints.startX === finalX && nexPathEndpoints.startY === finalY : false ;
+        const isSamePath = nexPathEndpoints ? 
+            isAlmostEqual(nexPathEndpoints.startX, finalX) && isAlmostEqual(nexPathEndpoints.startY, finalY) ||
+            isAlmostEqual(nexPathEndpoints.finalX, finalX) && isAlmostEqual(nexPathEndpoints.finalY, finalY)
+            : false ;
 
         let outOfLimit = false;
 
         if (settings.bedSize) {
             if ( isWithinBedSize(startOffsetX, startOffsetY) ) {
-                gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
-                gcode.push(settings.zDownCommand);
+                if (!isSamePath || i === 0) {
+                    gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
+                    gcode.push(settings.zDownCommand);
+                }
             } else {
                 outOfLimit = true
             }
         } else {
-            gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
-            gcode.push(settings.zDownCommand);
+            if (!isSamePath || i === 0) {
+                gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
+                gcode.push(settings.zDownCommand);
+            }
         }
 
         path.forEach(segment => {
             let x = ( settings.quadrant === 2 || settings.quadrant === 3 ) ? segment.x - width : segment.x;
             let y = ( settings.quadrant === 3 || settings.quadrant === 4 ) ? height - segment.y - height : height - segment.y;
 
-            x = parseFloat(scale(x) + settings.xOffset).toFixed(3);
-            y = parseFloat(scale(y) + settings.yOffset).toFixed(3);
+            x = Number(parseFloat(scale(x) + settings.xOffset).toFixed(3));
+            y = Number(parseFloat(scale(y) + settings.yOffset).toFixed(3));
 
             if (settings.bedSize) {
                 if (isWithinBedSize(x, y)) {
@@ -166,7 +169,7 @@ export function svg2gcode(svg, settings) {
         };
 
     }
-    gcode.push(settings.end);
+    // gcode.push(settings.end);
 
     return gcode.join('\n');
 }
