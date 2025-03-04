@@ -30,12 +30,12 @@ document.getElementById('convertBtn').addEventListener('click', () => {
             tolerance: 0.4,
             minimumArea: 2.5,
             pathPlanning: 'minimumTravel',
-            quadrant: 1,
-            // xOffset: 10,
-            // yOffset: 10,
+            quadrant: 3,
+            xOffset: 20,
+            yOffset: -12.6,
             bedSize: {
-                width: 420,
-                height: 297
+                width: 440,
+                height: 317
             }
         }
         const converter = new Converter(settings);

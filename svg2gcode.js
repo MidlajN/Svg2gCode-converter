@@ -64,9 +64,7 @@ export function svg2gcode(svg, settings) {
 
             currentPath = paths.splice(closestPathIndex, 1)[0];
 
-            if (reversePath) {
-                currentPath.reverse()
-            }
+            if (reversePath) currentPath.reverse();
 
             sortedPaths.push(currentPath);
         }
@@ -123,8 +121,8 @@ export function svg2gcode(svg, settings) {
         let outOfLimit = false;
 
         if (settings.bedSize) {
-            if ( isWithinBedSize(startOffsetX, startOffsetY) ) {
-                if (!isSamePath || i === 0) {
+            if (isWithinBedSize(startOffsetX, startOffsetY) ) {
+                if (i === 0 || gcode[gcode.length - 1] === settings.zUpCommand) {
                     gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
                     gcode.push(settings.zDownCommand);
                 }
@@ -132,7 +130,7 @@ export function svg2gcode(svg, settings) {
                 outOfLimit = true
             }
         } else {
-            if (!isSamePath || i === 0) {
+            if (i === 0 || gcode[gcode.length - 1] === settings.zUpCommand) {
                 gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
                 gcode.push(settings.zDownCommand);
             }
@@ -163,13 +161,11 @@ export function svg2gcode(svg, settings) {
                 gcode.push(`G1 X${x} Y${y}`)
             }
         });
-        // if (!isSamePath) gcode.push(settings.zUpCommand, `G0 F${settings.feedRate}`);
         if (!isSamePath && gcode[gcode.length - 1] !== settings.zUpCommand) {
             gcode.push(settings.zUpCommand)
         };
 
     }
-    // gcode.push(settings.end);
 
     return gcode.join('\n');
 }

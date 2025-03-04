@@ -51,16 +51,17 @@ const settings = {
     feedRate : 3000,
     seekRate : 2000,
     zValue: -15,
-    tolerance: 0.1,
+    tolerance: 0.4,
     minimumArea: 2.5,
     pathPlanning: 'minimumTravel',
     quadrant: 1,
+    xOffset: 10,
+    yOffset: 10,
     bedSize: {
         width: 420,
         height: 297
     }
 }
-
 // For using the default configuration , skip the settings
 const converter = new Converter(settings)
 
