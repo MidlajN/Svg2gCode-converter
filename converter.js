@@ -70,10 +70,10 @@ class Converter {
             let XMLRepresentation = getRepresentation(treeView)
             XMLRepresentation.viewBox = treeView.viewBox ? treeView.viewBox.split(' ') : '';
 
-            let gcode = svg2gcode(XMLRepresentation, this.settings)
-            const gcodeLines = gcode.split('\n')
+            let result = svg2gcode(XMLRepresentation, this.settings)
+            const gcodeLines = result.gcode.split('\n')
             const filteredGCode = gcodeLines.filter((item, pos) =>  pos === 0 || item !== gcodeLines[pos - 1]).join('\n');
-            resolve([filteredGCode])
+            resolve({ time: result.estimatedTime, gcode: filteredGCode})
         })
     }
 }

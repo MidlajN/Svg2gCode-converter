@@ -48,8 +48,8 @@ import { Converter } from 'svg-to-gcode'
 // Configuration for the plotter gcode ( the values are in mm)
 const settings = {
     zOffset : 3, 
-    feedRate : 3000,
-    seekRate : 2000,
+    feedRate : 3000, // mm/min
+    seekRate : 2000, // mm/min
     zValue: -15,
     tolerance: 0.4,
     minimumArea: 2.5,

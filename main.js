@@ -40,9 +40,10 @@ document.getElementById('convertBtn').addEventListener('click', () => {
         }
         const converter = new Converter(settings);
 
-        converter.convert(data).then((gcodes) => {
+        converter.convert(data).then((result) => {
 
-            let gcode = gcodes[0];
+            console.log('Result : ', result)
+            let gcode = result.gcode;
             const gcodeLines = gcode.split('\n');
             let gCode = '';
 

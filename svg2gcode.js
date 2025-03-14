@@ -104,6 +104,18 @@ export function svg2gcode(svg, settings) {
         return Math.abs(a - b) < tolerance;
     }
 
+    const getMovingTime = (startPos, endPos, feedRate) => {
+        const distance = Math.sqrt(
+            (startPos.x - endPos.x) ** 2 + 
+            (startPos.y - endPos.y) ** 2 + 
+            (startPos.z - endPos.z) ** 2
+        )
+        return feedRate > 0 ? distance / feedRate : 0;
+    }
+
+    let totalTime = 0;
+    let lastPosition = { x: 0, y: 0, z: 0 };
+
     for (let i = 0; i < paths.length; i++) {
         let path = paths[i];
         const nextPath = paths[i + 1] || null;
@@ -124,7 +136,9 @@ export function svg2gcode(svg, settings) {
             if (isWithinBedSize(startOffsetX, startOffsetY) ) {
                 if (i === 0 || gcode[gcode.length - 1] === settings.zUpCommand) {
                     gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
+                    totalTime += getMovingTime(lastPosition, { x: startOffsetX, y: startOffsetY, z: lastPosition.z }, settings.feedRate / 60)
                     gcode.push(settings.zDownCommand);
+                    totalTime += 2
                 }
             } else {
                 outOfLimit = true
@@ -132,7 +146,9 @@ export function svg2gcode(svg, settings) {
         } else {
             if (i === 0 || gcode[gcode.length - 1] === settings.zUpCommand) {
                 gcode.push(`G0 X${ startOffsetX } Y${ startOffsetY }`);
+                totalTime += getMovingTime(lastPosition, { x: startOffsetX, y: startOffsetY, z: lastPosition.z }, settings.feedRate / 60)
                 gcode.push(settings.zDownCommand);
+                totalTime += 2
             }
         }
 
@@ -147,25 +163,32 @@ export function svg2gcode(svg, settings) {
                 if (isWithinBedSize(x, y)) {
                     if (outOfLimit) {
                         gcode.push(`G0 X${x} Y${y}`)
+                        totalTime += getMovingTime(lastPosition, { x: x, y: y, z: lastPosition.z }, settings.feedRate / 60)
                         gcode.push(settings.zDownCommand);
+                        totalTime += 2
                         outOfLimit = false;
                     }
                     gcode.push(`G1 X${x} Y${y}`)
+                    totalTime += getMovingTime(lastPosition, { x: x, y: y, z: lastPosition.z }, settings.feedRate / 60)
                 } else {
                     if (gcode[gcode.length - 1] !== settings.zUpCommand) {
                         gcode.push(settings.zUpCommand);
+                        totalTime += 2;
                         outOfLimit = true;
                     }
                 }
             } else {
                 gcode.push(`G1 X${x} Y${y}`)
+                totalTime += getMovingTime(lastPosition, { x: x, y: y, z: lastPosition.z }, settings.feedRate / 60)
             }
+            lastPosition = { x: x, y: y, z: lastPosition.z }
         });
         if (!isSamePath && gcode[gcode.length - 1] !== settings.zUpCommand) {
             gcode.push(settings.zUpCommand)
+            totalTime += 2;
         };
 
     }
 
-    return gcode.join('\n');
+    return { estimatedTime: totalTime, gcode: gcode.join('\n') };
 }
